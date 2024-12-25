@@ -1,0 +1,36 @@
+<div class="container">
+
+
+
+    <div class="controls">
+        <div class="search">
+            <label for="ean">Søg på EAN-nr.</label>
+            <input type="text" id="ean" [(ngModel)]="search">
+        </div>
+        <button class="insert-data" (click)="triggerFileInput()">Indsæt data</button>
+
+        <!-- Hidden to make the button handle it -->
+        <input hidden type="file" #fileInput accept=".csv" (change)="onFileSelected($event)" />
+    </div>
+
+    <table class="products">
+        <thead>
+            <tr>
+                <th>EAN-nr.</th>
+                <th>Produkt</th>
+                <th>SSCC</th>
+                <th>Antal & Unit</th>
+                <th>Holdbarhed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products">
+                <td>{{product.EAN}}</td>
+                <td>{{product.title}}</td>
+                <td>{{product.SSCCWithoutChecksum}}</td>
+                <td>{{product.amount}} x {{product.unit}}</td>
+                <td>{{product.expirationDays}} dage</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

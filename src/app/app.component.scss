@@ -1,0 +1,7 @@
+.app {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    @media print {
+        grid-template-columns: 0px 1fr;
+    }
+}

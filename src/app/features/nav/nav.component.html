@@ -1,0 +1,7 @@
+<div class="nav hide-print">
+    <ul>
+        <li *ngFor="let link of navLinks">
+            <a [routerLink]="link.route" routerLinkActive="active"> <i [class]="link.icon"></i> {{link.label}}</a>
+        </li>
+    </ul>
+</div>

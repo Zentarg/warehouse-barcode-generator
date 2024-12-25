@@ -1,0 +1,108 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'variables';
+
+@page {
+    size: 11cm 15cm;
+    margin: .5cm;
+}
+
+body {
+    margin: 0;
+    color: $text-primary;
+    font-family: $font;
+}
+
+.hide-print{
+    @media print {
+        display: none;
+    }
+}
+
+a {
+    color: $text-primary;
+
+}
+
+
+.container {
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    width: 1200px; // Default width for large screens
+  
+    @include respond-to(xl) {
+      width: 1400px;
+    }
+  
+    @include respond-to(lg) {
+      width: 1200px;
+    }
+  
+    @include respond-to(md) {
+      width: 992px;
+    }
+  
+    @include respond-to(sm) {
+      width: 768px;
+    }
+  
+    @include respond-to(xs) {
+      width: 480px;
+    }
+  }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  
+    th, td {
+        border: 1px solid $secondary-grey;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: $secondary-light-grey;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: $secondary-light-grey-2;
+    }
+  
+    tr:hover {
+        background-color: $secondary-grey;
+    }
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: $primary-dark-blue;
+    color: $primary-white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    width: fit-content;
+    height: fit-content;
+    white-space: nowrap;
+  
+    &:hover {
+        background-color: $primary-dark-blue-hover;
+    }
+}
+
+input, select {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid $secondary-grey;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: $primary-white;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}

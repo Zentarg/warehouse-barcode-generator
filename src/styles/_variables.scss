@@ -1,0 +1,51 @@
+// Primary Colors
+$primary-dark-blue-hover: #37527a; // Soft Dark Blue
+$primary-dark-blue: #4A6FA5; // Soft Dark Blue
+$primary-light-blue: #A3C4DC;
+$primary-white: #FFFFFF;
+
+// Secondary Colors
+$secondary-grey: #B0B0B0;
+$secondary-light-grey: #E0E0E0;
+$secondary-light-grey-2: #f0f0f0;
+$secondary-dark-grey: #707070;
+
+// Accent Colors
+$accent-yellow: #FFD700;
+$accent-green: #8FBC8F;
+$accent-red: #CD5C5C;
+
+// Background Colors
+$background-light: #F5F5F5;
+$background-dark: #2C2C2C;
+
+// Text Colors
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-inverse: #FFFFFF;
+
+// fonts
+$font: 'inter', sans-serif;
+
+
+// Breakpoints
+$breakpoint-xs: 480px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 992px;
+$breakpoint-lg: 1200px;
+$breakpoint-xl: 1400px;
+
+// Mixin for breakpoints
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $breakpoint-xs) { @content; }
+  } @else if $breakpoint == sm {
+    @media (max-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: $breakpoint-xl) { @content; }
+  }
+}

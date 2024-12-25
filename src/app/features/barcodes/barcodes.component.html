@@ -1,0 +1,39 @@
+<main>
+    <div class="print-controls hide-print">
+        <div class="EAN-search">
+            <label for="ean">Søg på EAN-nr.</label>
+            <input type="text" id="ean">
+        </div>
+        <div class="select">
+            <label for="products">Vælg produkt</label>
+            <select id="products">
+                <option>Default</option>
+                <option>Default2</option>
+                <option>Default3</option>
+            </select>
+        </div>
+        <button>Print</button>
+    </div>
+    <div class="print">
+        <div class="title">
+            <span [innerHTML]="product.title"></span>
+        </div>
+        <div class="divider"></div>
+        <div class="data">
+            <p class="sscc">SSCC: {{product.SSCCWithoutChecksum + calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}}</p>
+            <div>
+                <p class="ean">EAN-nr.: {{product.EAN}}</p>
+                <p class="amount">Antal: {{product.amount}} x {{product.unit}}</p>
+            </div>
+            <p class="batch">Batch-nr: {{batchNumber}}</p>
+            <p class="best-before">Bedst før: {{expirationDate}}</p>
+        </div>
+        <div class="divider"></div>
+        <div class="barcodes">
+            <canvas class="barcode" id="barcode"></canvas>
+            <canvas class="barcode" id="barcode2"></canvas>
+            <canvas class="barcode" id="barcode3"></canvas>
+        
+        </div>
+    </div>
+</main>
