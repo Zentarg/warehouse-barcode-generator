@@ -34,11 +34,18 @@ export class ProductsService {
   }
 
   public saveProducts(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this._products));
+    if (window.electronStore)
+      window.electronStore.set(this.storageKey, JSON.stringify(this._products));
+    else
+      localStorage.setItem(this.storageKey, JSON.stringify(this._products));
   }
 
-  private loadProducts(): void {
-    const products = localStorage.getItem(this.storageKey);
+  private async loadProducts(): Promise<void> {
+    let products;
+    if (window.electronStore)
+      products = await window.electronStore.get(this.storageKey);
+    else
+      products = localStorage.getItem(this.storageKey);
     if (products) {
       this._products = JSON.parse(products);
     }

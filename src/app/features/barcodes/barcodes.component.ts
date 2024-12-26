@@ -15,7 +15,7 @@ import { After } from 'v8';
   templateUrl: './barcodes.component.html',
   styleUrl: './barcodes.component.scss'
 })
-export class BarcodesComponent implements AfterContentInit{
+export class BarcodesComponent {
   _kolliBarcode: string = '';
   _selectedProduct: Product | undefined;
 
@@ -24,13 +24,7 @@ export class BarcodesComponent implements AfterContentInit{
   _expirationDate: string = '';
   _kolli: number = 0;
 
-  products: Product[] = [];
-
   constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService) {
-    this.products = productsService.products;
-  }
-  ngAfterContentInit(): void {
-    this.selectedProduct = this.products[0];
   }
 
   updateBarcodes(): void {
@@ -116,10 +110,6 @@ export class BarcodesComponent implements AfterContentInit{
     this.updateBarcodes();
   };
 
-  get kolliBarcode(): string {
-    return this._kolliBarcode;
-  }
-
   get batchNumber(): string {
     return this._batchNumber;
   }
@@ -147,16 +137,22 @@ export class BarcodesComponent implements AfterContentInit{
     this.updateBarcodes();
   }
 
+  get kolliBarcode(): string {
+    return this._kolliBarcode;
+  }
 
   set kolliBarcode(value: string) {
     this._kolliBarcode = value;
-    this.products = this.productsService.products.filter(product => this.kolliBarcode.includes(product.EAN));
     let { ean, batchNumber, expirationDate } = this.barcodeHelperService.seperateKolliBarcode(value);
     this.ean = ean;
     this._batchNumber = batchNumber;
     this._expirationDate = expirationDate;
     this._kolli = this.products[0].kolli;
     this.selectedProduct = this.products[0];
+  }
+
+  get products(): Product[] {
+    return this.productsService.products.filter(product => this.kolliBarcode == '' || this.kolliBarcode.includes(product.EAN));
   }
 
 }
