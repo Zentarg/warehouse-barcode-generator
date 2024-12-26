@@ -3,11 +3,20 @@
 
 
     <div class="controls">
-        <div class="search">
-            <label for="ean">Søg på EAN-nr.</label>
-            <input type="text" id="ean" [(ngModel)]="search">
+        <div class="filters">
+            <div class="company-search">
+                <label for="company">Søg på Firma</label>
+                <input type="text" id="company" [(ngModel)]="companySearch">
+            </div>
+            <div class="ean-search">
+                <label for="ean">Søg på EAN-nr.</label>
+                <input type="text" id="ean" [(ngModel)]="eanSearch">
+            </div>
         </div>
-        <button class="insert-data" (click)="triggerFileInput()">Indsæt data</button>
+        <div class="import-export">
+            <button class="export-data" (click)="export()">Eksporter data</button>
+            <button class="insert-data" (click)="triggerFileInput()">Indsæt data</button>
+        </div>
 
         <!-- Hidden to make the button handle it -->
         <input hidden type="file" #fileInput accept=".csv" (change)="onFileSelected($event)" />
@@ -16,20 +25,20 @@
     <table class="products">
         <thead>
             <tr>
+                <th>Firma</th>
                 <th>EAN-nr.</th>
                 <th>Produkt</th>
                 <th>SSCC</th>
-                <th>Antal & Unit</th>
-                <th>Holdbarhed</th>
+                <th>Kolli</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let product of products">
+                <td>{{product.company}}</td>
                 <td>{{product.EAN}}</td>
                 <td>{{product.title}}</td>
-                <td>{{product.SSCCWithoutChecksum}}</td>
-                <td>{{product.amount}} x {{product.unit}}</td>
-                <td>{{product.expirationDays}} dage</td>
+                <td>{{product.SSCCWithoutChecksum}}{{barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}}</td>
+                <td>{{product.kolli}}</td>
             </tr>
         </tbody>
     </table>

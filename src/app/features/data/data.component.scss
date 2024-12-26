@@ -3,4 +3,17 @@
     flex-direction: row;
     align-items: end;
     justify-content: space-between;
+
+    .filters {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .import-export {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+
+    }
 }

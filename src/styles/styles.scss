@@ -1,8 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'variables';
 
+
 @page {
-    size: 11cm 15cm;
+    size: 10cm 15cm;
     margin: .5cm;
 }
 
@@ -14,7 +15,7 @@ body {
 
 .hide-print{
     @media print {
-        display: none;
+        display: none !important;
     }
 }
 

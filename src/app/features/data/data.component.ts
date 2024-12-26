@@ -2,6 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../../core/models/product';
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductsService } from '../../core/services/products.service';
+import { CsvHandlerService } from '../../core/services/csv-handler.service';
+import { BarcodeHelperService } from '../../core/services/barcode-helper.service';
 
 @Component({
   selector: 'app-data',
@@ -13,43 +16,20 @@ import { FormsModule } from '@angular/forms';
 export class DataComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  _products: Product[] = [ 
-    {
-      EAN: '1234567890123',
-      SSCCWithoutChecksum: '123456789012345678',
-      amount: 1,
-      unit: '175 ltr.',
-      title: 'Product 1',
-      expirationDays: 365
-    },
-    {
-      EAN: '1234567890124',
-      SSCCWithoutChecksum: '123456789012345679',
-      amount: 2,
-      unit: '40 ltr.',
-      title: 'Product 2',
-      expirationDays: 365
-    },
-    {
-      EAN: '1234567890125',
-      SSCCWithoutChecksum: '123456789012345680',
-      amount: 3,
-      unit: '30 ltr.',
-      title: 'Product 3',
-      expirationDays: 365
-    }
-  ];
+  constructor(private productsService: ProductsService, private csvHandlerService: CsvHandlerService, public barcodeHelperService: BarcodeHelperService) {
+  }
 
-  search: string = '';
+  eanSearch: string = '';
+  companySearch: string = '';
 
   get products() {
-    return this._products.filter(product => product.EAN.includes(this.search));
+    return this.productsService.products.filter(product => product.EAN.includes(this.eanSearch) && product.company.includes(this.companySearch));
   }
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
-  
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -57,24 +37,14 @@ export class DataComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target?.result as string;
-        this.processCSV(text);
+        this.productsService.setproducts(this.csvHandlerService.processCSV(text));
       };
       reader.readAsText(file);
     }
   }
 
-  processCSV(csv: string): void {
-    const lines = csv.split('\n');
-    const headers = lines[0].split(',');
-    const data = lines.slice(1).map(line => {
-      const values = line.split(',');
-      return headers.reduce((obj, header, index) => {
-        obj[header.trim()] = values[index].trim();
-        return obj;
-      }, {} as any);
-    });
-
-    console.log(data); // Process the CSV data as needed
+  export(): void {
+    this.csvHandlerService.exportCSV(this.productsService.products);
   }
   
 }

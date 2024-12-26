@@ -1,8 +1,7 @@
 export interface Product {
+    company: string;
     EAN: string;
-    SSCCWithoutChecksum: string;
-    amount: number;
-    unit: string;
     title: string;
-    expirationDays: number;
+    SSCCWithoutChecksum: string;
+    kolli: number;
 }
