@@ -1,7 +1,57 @@
+@import 'variables';
 .app {
     display: grid;
     grid-template-columns: 200px 1fr;
     @media print {
         grid-template-columns: 0px 1fr;
+    }
+}
+
+.update {
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: $background-overlay;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 0 $background-overlay;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+
+        .progress-bar {
+            position: relative;
+            background: $primary-light-blue;
+            width: 100%;
+            border-radius: 5px;
+            height: 20px;
+            span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: $text-inverse;
+            }
+
+            .progress {
+                position: absolute;
+                left: 0;
+                height: 20px;
+                border-radius: 5px;
+                background: $primary-dark-blue;
+            }
+        }
     }
 }

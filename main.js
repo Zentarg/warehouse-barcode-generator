@@ -6,6 +6,7 @@ const { autoUpdater } = require('electron-updater');
 
 let store;
 let startUrl;
+let mainWindow;
 
 async function createWindow() {
   const Store = (await import('electron-store')).default;
@@ -14,7 +15,7 @@ async function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 
-  let win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: width,
     height: height,
     webPreferences: {
@@ -32,22 +33,22 @@ async function createWindow() {
     slashes: true,
   });
 
-  win.loadURL(startUrl);
+  mainWindow.loadURL(startUrl);
 
-  win.on('closed', () => {
-    win = null;
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 
   // Handle all routes and serve index.html
-  win.webContents.on('did-fail-load', () => {
-    win.loadURL(startUrl);
+  mainWindow.webContents.on('did-fail-load', () => {
+    mainWindow.loadURL(startUrl);
   });
 
   // Handle navigation to base path on reload
-  win.webContents.on('will-navigate', (event, newUrl) => {
+  mainWindow.webContents.on('will-navigate', (event, newUrl) => {
     if (newUrl !== startUrl) {
       event.preventDefault();
-      win.loadURL(startUrl);
+      mainWindow.loadURL(startUrl);
     }
   });
 
@@ -79,11 +80,37 @@ ipcMain.handle('store-get', (event, key) => {
 });
 
 // Auto-updater events
-autoUpdater.on('update-available', () => {
-  console.log('Update available');
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for update...');
+});
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update available:', info);
+  if (mainWindow)
+    mainWindow.webContents.send('update-available');
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update not available:', info);
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('Error in auto-updater:', err);
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  console.log('Download progress:', progressObj);
+  if (mainWindow)
+    mainWindow.webContents.send('download-progress', progressObj);
 });
 
 autoUpdater.on('update-downloaded', () => {
   console.log('Update downloaded');
-  autoUpdater.quitAndInstall();
+
+  if (mainWindow) {
+    mainWindow.webContents.send('update-downloaded');
+  }
+
+  // Wait half a second, then quit and install the update
+  setTimeout(() => { autoUpdater.quitAndInstall(); }, 500);
 });
