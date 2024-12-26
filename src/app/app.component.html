@@ -6,18 +6,18 @@
     <router-outlet />
   </main>
 </div>
-<aside class="update" *ngIf="updateInProgress">
+<aside class="update" *ngIf="updateInProgress$ | async">
   <div class="content">
-    <ng-container *ngIf="!updateDownloaded">
+    <ng-container *ngIf="!(updateDownloaded$ | async)">
       <p>
         Der er en opdatering tilgængelig, programmet opdateres:
       </p>
       <div class="progress-bar">
-        <div class="progress" [style.width]="downloadProgress+'%'"></div>
-        <span>{{downloadProgress}}%</span>
+        <div class="progress" [style.width]="(downloadProgress$ | async)+'%'"></div>
+        <span>{{downloadProgress$ | async}}%</span>
       </div>
     </ng-container>
-    <ng-container *ngIf="updateDownloaded">
+    <ng-container *ngIf="updateDownloaded$ | async">
       <p>
         Programmet er opdateret, og genstarter om et øjeblik.
       </p>

@@ -11,3 +11,10 @@ contextBridge.exposeInMainWorld('electronUpdater', {
   onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
   onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', callback)
 });
+
+contextBridge.exposeInMainWorld('electron', {
+  ipcRenderer: {
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
+    on: (channel, listener) => ipcRenderer.on(channel, listener)
+  }
+});

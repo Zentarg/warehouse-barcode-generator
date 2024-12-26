@@ -122,3 +122,26 @@ autoUpdater.on('update-downloaded', () => {
   // Wait half a second, then quit and install the update
   setTimeout(() => { autoUpdater.quitAndInstall(); }, 500);
 });
+
+// Simulate update events
+ipcMain.on('simulate-update-events', () => {
+  if (mainWindow) {
+    // Simulate update-available event
+    mainWindow.webContents.send('update-available');
+    console.log('Simulated: Update available, starting download...');
+
+    // Simulate download progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      mainWindow.webContents.send('download-progress', { percent: progress });
+      console.log(`Simulated: Download progress: ${progress}%`);
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        mainWindow.webContents.send('update-downloaded');
+        console.log('Simulated: Update downloaded, ready to install.');
+      }
+    }, 250);
+  }
+});
