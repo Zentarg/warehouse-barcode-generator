@@ -1,6 +1,6 @@
 {
   "name": "warehouse-barcode-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "main.js",
   "author": {
     "name": "Andreas Giehm",
@@ -10,7 +10,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "dist": "ng build && electron-builder",
+    "dist": "ng build && electron-builder --linux --win",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:warehouse-barcode-generator": "node dist/warehouse-barcode-generator/server/server.mjs"
@@ -38,7 +38,14 @@
       "target": [
         "AppImage",
         "deb"
-      ]
+      ],
+      "icon": "src/assets/icons"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "src/assets/icons/icon.ico"
     }
   },
   "private": true,

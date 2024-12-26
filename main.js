@@ -14,10 +14,18 @@ async function createWindow() {
 
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
+  
+  let iconPath;
+  if (process.platform === 'win32') {
+    iconPath = path.join(app.getAppPath(), 'assets/icons/icon.ico');
+  } else {
+    iconPath = path.join(app.getAppPath(), 'assets/icons/icon.png');
+  }
 
   mainWindow = new BrowserWindow({
     width: width,
     height: height,
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,

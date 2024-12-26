@@ -17,25 +17,26 @@ export class AppComponent {
   updateDownloaded: boolean = false;
   
   constructor() {
-
-    window.electronUpdater.onUpdateAvailable(() => {
-      this.updateInProgress = true;
-      console.log('Update available, starting download...');
-    });
-
-    // Listen for download progress
-    window.electronUpdater.onDownloadProgress((event, progress) => {
-      if (this.updateInProgress) {
-        this.downloadProgress = progress.percent;
-        console.log(`Download progress: ${this.downloadProgress}%`);
-      }
-    });
-
-    // Listen for update-downloaded event
-    window.electronUpdater.onUpdateDownloaded(() => {
-      this.updateDownloaded = true;
-      console.log('Update downloaded, ready to install.');
-    });
+    if (window.electronUpdater) {
+      window.electronUpdater.onUpdateAvailable(() => {
+        this.updateInProgress = true;
+        console.log('Update available, starting download...');
+      });
+  
+      // Listen for download progress
+      window.electronUpdater.onDownloadProgress((event, progress) => {
+        if (this.updateInProgress) {
+          this.downloadProgress = progress.percent;
+          console.log(`Download progress: ${this.downloadProgress}%`);
+        }
+      });
+  
+      // Listen for update-downloaded event
+      window.electronUpdater.onUpdateDownloaded(() => {
+        this.updateDownloaded = true;
+        console.log('Update downloaded, ready to install.');
+      });
+    }
     
   }
 }
