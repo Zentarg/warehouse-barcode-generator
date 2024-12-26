@@ -10,5 +10,5 @@ import { NavComponent } from "./features/nav/nav.component";
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'warhouse-barcode-generator';
+  title = 'warehouse-barcode-generator';
 }

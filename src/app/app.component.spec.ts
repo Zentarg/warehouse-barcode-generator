@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'warhouse-barcode-generator' title`, () => {
+  it(`should have the 'warehouse-barcode-generator' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('warhouse-barcode-generator');
+    expect(app.title).toEqual('warehouse-barcode-generator');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, warhouse-barcode-generator');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, warehouse-barcode-generator');
   });
 });

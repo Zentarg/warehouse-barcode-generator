@@ -1,10 +1,10 @@
 {
-  "name": "warhouse-barcode-generator",
-  "version": "1.0.0",
+  "name": "warehouse-barcode-generator",
+  "version": "1.0.1",
   "main": "main.js",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
+    "name": "Andreas Giehm",
+    "email": "apg.chili@gmail.com"
   },
   "scripts": {
     "ng": "ng",
@@ -13,19 +13,26 @@
     "dist": "ng build && electron-builder",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:warhouse-barcode-generator": "node dist/warhouse-barcode-generator/server/server.mjs"
+    "serve:ssr:warehouse-barcode-generator": "node dist/warehouse-barcode-generator/server/server.mjs"
   },
   "build": {
-    "appId": "com.test",
-    "productName": "test",
+    "appId": "zentarg.warehouse-barcode-generator",
+    "productName": "Warehouse Barcode Generator",
     "directories": {
       "output": "dist-electron"
     },
     "files": [
-      "dist/warhouse-barcode-generator/browser/**/*",
+      "dist/warehouse-barcode-generator/browser/**/*",
       "main.js",
       "preload.js",
       "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "zentarg",
+        "repo": "warehouse-barcode-generator"
+      }
     ],
     "linux": {
       "target": [
@@ -49,6 +56,7 @@
     "bootstrap-icons": "^1.11.3",
     "bwip-js": "^4.5.1",
     "electron-store": "^10.0.0",
+    "electron-updater": "^6.3.9",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

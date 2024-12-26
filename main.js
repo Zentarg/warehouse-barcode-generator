@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const url = require('url');
+const { autoUpdater } = require('electron-updater');
 
 let store;
 let startUrl;
@@ -26,7 +27,7 @@ async function createWindow() {
 
   startUrl = 
   url.format({
-    pathname: path.join(app.getAppPath(), 'dist/warhouse-barcode-generator/browser/index.html'),
+    pathname: path.join(app.getAppPath(), 'dist/warehouse-barcode-generator/browser/index.html'),
     protocol: 'file:',
     slashes: true,
   });
@@ -49,6 +50,9 @@ async function createWindow() {
       win.loadURL(startUrl);
     }
   });
+
+  // Check for updates
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 app.on('ready', createWindow);
@@ -72,4 +76,14 @@ ipcMain.handle('store-set', (event, key, value) => {
 
 ipcMain.handle('store-get', (event, key) => {
   return store.get(key);
+});
+
+// Auto-updater events
+autoUpdater.on('update-available', () => {
+  console.log('Update available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('Update downloaded');
+  autoUpdater.quitAndInstall();
 });
