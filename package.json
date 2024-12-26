@@ -10,7 +10,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "dist": "ng build && electron-builder --linux --win",
+    "dist": "ng build && electron-builder --linux --win && node scripts/replace-latest-yml-dashes.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:warehouse-barcode-generator": "node dist/warehouse-barcode-generator/server/server.mjs"
@@ -46,6 +46,9 @@
         "nsis"
       ],
       "icon": "src/assets/icons/icon.ico"
+    },
+    "nsis": {
+      "artifactName": "${productName} Setup-${version}.${ext}"
     }
   },
   "private": true,
