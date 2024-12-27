@@ -28,26 +28,27 @@ a {
 .container {
     margin: 0 auto;
     padding: 2rem 1rem;
-    width: 1200px; // Default width for large screens
+    // Minus sidebar 200px
+    width: calc(1200px - 200px); // Default width for large screens
   
     @include respond-to(xl) {
-      width: 1400px;
+      width: calc(1400px - 200px);
     }
   
     @include respond-to(lg) {
-      width: 1200px;
+      width: calc(1200px - 200px);
     }
   
     @include respond-to(md) {
-      width: 992px;
+      width: calc(992px - 200px);
     }
   
     @include respond-to(sm) {
-      width: 768px;
+      width: calc(768px - 200px);
     }
   
     @include respond-to(xs) {
-      width: 480px;
+      width: calc(480px - 200px);
     }
   }
 

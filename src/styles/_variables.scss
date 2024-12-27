@@ -41,12 +41,12 @@ $breakpoint-xl: 1400px;
   @if $breakpoint == xs {
     @media (max-width: $breakpoint-xs) { @content; }
   } @else if $breakpoint == sm {
-    @media (max-width: $breakpoint-sm) { @content; }
+    @media (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) { @content; }
   } @else if $breakpoint == md {
-    @media (max-width: $breakpoint-md) { @content; }
+    @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) { @content; }
   } @else if $breakpoint == lg {
-    @media (max-width: $breakpoint-lg) { @content; }
+    @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) { @content; }
   } @else if $breakpoint == xl {
-    @media (max-width: $breakpoint-xl) { @content; }
+    @media (min-width: $breakpoint-xl) { @content; }
   }
 }
