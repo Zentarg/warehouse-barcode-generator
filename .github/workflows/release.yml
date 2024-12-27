@@ -43,4 +43,4 @@ jobs:
             dist-electron/latest.yml
             dist-electron/latest-linux.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
