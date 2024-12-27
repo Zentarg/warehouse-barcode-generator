@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavComponent } from "./features/nav/nav.component";
 import { AsyncPipe, NgIf } from '@angular/common';
-import { BehaviorSubject, lastValueFrom, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit{
       // Listen for download progress
       window.electronUpdater.onDownloadProgress(async (event, progress) => {
         this.downloadProgressSubject$.next(progress.percent);
-        console.log(`Download progress: ${progress.percent}%`);
+        console.log(`Download progress: ${Math.round(progress.percent)}%`);
       });
   
       // Listen for update-downloaded event

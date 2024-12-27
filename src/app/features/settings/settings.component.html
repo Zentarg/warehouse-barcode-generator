@@ -1,0 +1,19 @@
+<main class="container">
+    <div class="printers">
+        <div class="printer">
+            <label for="label-printer">Valgt label printer</label>
+            <div class="label-printer">
+                <input type="text" disabled id="label-printer" [value]="labelPrinter?.displayName">
+                <button (click)="chooseLabelPrinter()">Vælg</button>
+            </div>
+        </div>
+        <div class="printer">
+            <label for="deliverynote-printer">Valgt følgeseddel printer</label>
+            <div class="deliverynote-printer">
+                <input type="text" disabled id="deliverynote-printer" [value]="deliveryNotePrinter?.displayName">
+                <button (click)="chooseDeliveryNotePrinter()">Vælg</button>
+            </div>
+        </div>
+    </div>
+</main>
+

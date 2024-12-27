@@ -7,6 +7,10 @@
     margin: .5cm;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     color: $text-primary;
@@ -78,7 +82,7 @@ table {
 }
 
 button {
-    padding: 10px 20px;
+    padding: .66em 1em;
     border: none;
     background-color: $primary-dark-blue;
     color: $primary-white;
@@ -95,7 +99,7 @@ button {
     }
 }
 
-input, select {
+input:not([type=checkbox]):not([type=radio]), select {
     padding: 10px;
     width: 100%;
     border: 1px solid $secondary-grey;

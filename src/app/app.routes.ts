@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { BarcodesComponent } from './features/barcodes/barcodes.component';
 import { DataComponent } from './features/data/data.component';
+import { SettingsComponent } from './features/settings/settings.component';
 
 export const routes: Routes = [
     {
@@ -12,6 +13,11 @@ export const routes: Routes = [
         path: 'barcodes',
         pathMatch: 'full',
         component: BarcodesComponent
+    },
+    {
+        path: 'settings',
+        pathMatch: 'full',
+        component: SettingsComponent
     },
     {
         path: '',

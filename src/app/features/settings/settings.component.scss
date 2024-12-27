@@ -1,0 +1,20 @@
+
+
+.printers {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    gap: 2em;
+
+    .printer {
+        flex-grow: 1;
+
+    }
+    
+    .label-printer, .deliverynote-printer {
+        display: flex;
+        flex-direction: row;
+        gap: 1em;
+    }
+}

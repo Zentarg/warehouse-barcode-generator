@@ -1,0 +1,14 @@
+<aside>
+    <div class="select-printer">
+        <div class="select">
+            <label for="printers">{{title}}</label>
+            <select id="printers" [(ngModel)]="selectedPrinter">
+                <option *ngFor="let printer of printers" [ngValue]="printer">{{printer.name}}</option>
+            </select>
+        </div>
+        <button (click)="getAvailablePrinters()">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+    <button (click)="select()">Vælg</button>
+</aside>

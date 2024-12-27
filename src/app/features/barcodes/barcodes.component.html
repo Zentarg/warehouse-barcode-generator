@@ -1,5 +1,5 @@
 <main>
-    <div class="print-controls hide-print">
+    <div class="print-data hide-print">
         <div class="EAN-search">
             <label for="ean">Stregkode</label>
             <input type="text" id="ean" [(ngModel)]="kolliBarcode">
@@ -24,34 +24,46 @@
             <label for="kolli">Kolli</label>
             <input type="number" id="kolli" [(ngModel)]="kolli">
         </div>
-        <button (click)="print()">Print</button>
-    </div>
-    <div class="print" >
-        <ng-container>
-            <div class="title">
-                <span [innerHTML]="selectedProduct?.title?.replaceAll('\\n', '<br>')"></span>
+        <div class="print-controls">
+            <div class="automatic-print">
+                <label for="automatic-print">
+                    Automatisk Print
+                    <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
+                </label>
+                <span *ngIf="isPrinting">Printer om {{automaticPrintCountdown}}s</span>
             </div>
-            <div class="divider"></div>
-            <div class="data">
-                <p class="sscc">SSCC: 
-                    <span *ngIf="selectedProduct?.SSCCWithoutChecksum">
-                        {{selectedProduct!.SSCCWithoutChecksum + barcodeHelperService.calculateGS1128CheckDigit(selectedProduct!.SSCCWithoutChecksum)}}
-                    </span>
-                </p>
-                <div>
-                    <p class="ean">EAN-nr.: {{selectedProduct?.EAN}}</p>
-                    <p class="amount">Antal: {{kolli}} Kolli</p>
+            <button (click)="print()">Print</button>
+        </div>
+    </div>
+    <div class="print-container">
+        <div class="print" >
+            <ng-container>
+                <div class="title">
+                    <span [innerHTML]="selectedProduct?.title?.replaceAll('\\n', '<br>')"></span>
                 </div>
-                <p class="batch">Batch-nr: {{barcodeHelperService.addSeperatorsToDate(batchNumber)}}</p>
-                <p class="best-before">Bedst før: {{barcodeHelperService.addSeperatorsToDate(expirationDate)}}</p>
-            </div>
-            <div class="divider"></div>
-            <div class="barcodes">
-                <canvas class="barcode" id="barcode1"></canvas>
-                <canvas class="barcode" id="barcode2"></canvas>
-                <canvas class="barcode" id="barcode3"></canvas>
-            
-            </div>
-        </ng-container>
+                <div class="divider"></div>
+                <div class="data">
+                    <p class="sscc">SSCC: 
+                        <span *ngIf="selectedProduct?.SSCCWithoutChecksum">
+                            {{selectedProduct!.SSCCWithoutChecksum + barcodeHelperService.calculateGS1128CheckDigit(selectedProduct!.SSCCWithoutChecksum)}}
+                        </span>
+                    </p>
+                    <div>
+                        <p class="ean">EAN-nr.: {{selectedProduct?.EAN}}</p>
+                        <p class="amount">Antal: {{kolli}} Kolli</p>
+                    </div>
+                    <p class="batch">Batch-nr: {{barcodeHelperService.addSeperatorsToDate(batchNumber)}}</p>
+                    <p class="best-before">Bedst før: {{barcodeHelperService.addSeperatorsToDate(expirationDate)}}</p>
+                </div>
+                <div class="divider"></div>
+                <div class="barcodes">
+                    <canvas class="barcode" id="barcode1"></canvas>
+                    <canvas class="barcode" id="barcode2"></canvas>
+                    <canvas class="barcode" id="barcode3"></canvas>
+                
+                </div>
+            </ng-container>
+        </div>
     </div>
+    
 </main>

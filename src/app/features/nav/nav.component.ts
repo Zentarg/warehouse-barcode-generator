@@ -24,6 +24,11 @@ export class NavComponent {
       route: '/data',
       icon: 'bi bi-file-earmark-spreadsheet'
     },
+    {
+      label: 'Indstillinger',
+      route: '/settings',
+      icon: 'bi bi-gear'
+    },
   ]
 
 }

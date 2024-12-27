@@ -34,8 +34,7 @@ async function createWindow() {
     },
   });
 
-  startUrl = 
-  url.format({
+  startUrl = process.env.ELECTRON_START_URL || url.format({
     pathname: path.join(app.getAppPath(), 'dist/warehouse-barcode-generator/browser/index.html'),
     protocol: 'file:',
     slashes: true,
@@ -53,12 +52,12 @@ async function createWindow() {
   });
 
   // Handle navigation to base path on reload
-  mainWindow.webContents.on('will-navigate', (event, newUrl) => {
-    if (newUrl !== startUrl) {
-      event.preventDefault();
-      mainWindow.loadURL(startUrl);
-    }
-  });
+  // mainWindow.webContents.on('will-navigate', (event, newUrl) => {
+  //   if (newUrl !== startUrl) {
+  //     event.preventDefault();
+  //     mainWindow.loadURL(startUrl);
+  //   }
+  // });
 
   // Check for updates
   autoUpdater.checkForUpdatesAndNotify();
@@ -144,4 +143,10 @@ ipcMain.on('simulate-update-events', () => {
       }
     }, 250);
   }
+});
+
+// Simulate update events
+ipcMain.handle('get-available-printers', async (event) => {
+  const printers = await mainWindow.webContents.getPrintersAsync();
+  event.sender.send('available-printers', printers);
 });

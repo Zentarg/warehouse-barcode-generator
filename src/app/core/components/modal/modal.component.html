@@ -1,0 +1,11 @@
+<div class="modal-overlay" [class.fullscreen]="modalSettings?.fullscreen" [class]="modalSettings?.size" (click)="close()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <button class="close-button" *ngIf="!modalSettings?.hideCloseButton" (click)="close()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="modal-body">
+        <ng-template #modalContent></ng-template>
+      </div>
+    </div>
+  </div>
+  

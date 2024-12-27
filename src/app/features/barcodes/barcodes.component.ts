@@ -23,6 +23,11 @@ export class BarcodesComponent {
   _batchNumber: string = '';
   _expirationDate: string = '';
   _kolli: number = 0;
+  _automaticPrint: boolean = false;
+  _isPrinting: boolean = false;
+  _automaticPrintCountdown: number = 0;
+  automaticPrintTimeout: any;
+  automaticPrintCountdownInterval: any;
 
   constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService) {
   }
@@ -80,25 +85,44 @@ export class BarcodesComponent {
     
   }
 
+  startAutomaticPrint(): void {
+    this.isPrinting = true;
+    this.automaticPrintCountdown = 10;
+    this.automaticPrintCountdownInterval = setInterval(() => {
+      this.automaticPrintCountdown = Math.round((this.automaticPrintCountdown - 0.1) * 10) / 10;
+      console.log(this.automaticPrintCountdown);
+      if (this.automaticPrintCountdown <= 0) {
+        console.log("Printing");
+        clearInterval(this.automaticPrintCountdownInterval);
+        this.afterPrint();
+      }
+    }, 100);
+  }
+
   print(): void {
     window.onafterprint = () => {
-      const index = this.products.findIndex(product => product.EAN === this.selectedProduct?.EAN);
-      console.log(index, this.products, this.selectedProduct?.EAN);
-      if (index == -1)
-        return;
-      let sscc = this.products[index].SSCCWithoutChecksum;
-      if (this.barcodeHelperService.hasValidCheckDigit(this.products[index].SSCCWithoutChecksum))
-        sscc = this.products[index].SSCCWithoutChecksum.slice(0, -1);
-      const leadingZeros = this.barcodeHelperService.countLeadingZeros(this.products[index].SSCCWithoutChecksum);
-      let ssccWithoutLeading = +this.products[index].SSCCWithoutChecksum.slice(leadingZeros);
-      ssccWithoutLeading++;
-      const dupedProduct = this.products.find(product => product.SSCCWithoutChecksum == `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`);
-      if (dupedProduct)
-        alert(`Et produkt med samme SSCC eksisterer allerede: EAN: ${dupedProduct.EAN} | SSCC: ${dupedProduct.SSCCWithoutChecksum} | Titel: ${dupedProduct.title.replaceAll('\\n', ' ')}`);
-      this.products[index].SSCCWithoutChecksum = `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`;
-      this.productsService.saveProducts();
+      this.afterPrint();
     }
     window.print();
+  }
+
+  afterPrint(): void {
+    const index = this.products.findIndex(product => product.EAN === this.selectedProduct?.EAN);
+    if (index == -1)
+      return;
+    let sscc = this.products[index].SSCCWithoutChecksum;
+    if (this.barcodeHelperService.hasValidCheckDigit(this.products[index].SSCCWithoutChecksum))
+      sscc = this.products[index].SSCCWithoutChecksum.slice(0, -1);
+    const leadingZeros = this.barcodeHelperService.countLeadingZeros(this.products[index].SSCCWithoutChecksum);
+    let ssccWithoutLeading = +this.products[index].SSCCWithoutChecksum.slice(leadingZeros);
+    ssccWithoutLeading++;
+    const dupedProduct = this.products.find(product => product.SSCCWithoutChecksum == `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`);
+    if (dupedProduct)
+      alert(`Et produkt med samme SSCC eksisterer allerede: EAN: ${dupedProduct.EAN} | SSCC: ${dupedProduct.SSCCWithoutChecksum} | Titel: ${dupedProduct.title.replaceAll('\\n', ' ')}`);
+    this.products[index].SSCCWithoutChecksum = `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`;
+    this.productsService.saveProducts();
+    
+    this.isPrinting = false;
   }
 
   get selectedProduct(): Product | undefined {
@@ -149,10 +173,39 @@ export class BarcodesComponent {
     this._expirationDate = expirationDate;
     this._kolli = this.products[0].kolli;
     this.selectedProduct = this.products[0];
+
+    if (this.automaticPrint)
+      this.startAutomaticPrint();
   }
 
   get products(): Product[] {
     return this.productsService.products.filter(product => this.kolliBarcode == '' || this.kolliBarcode.includes(product.EAN));
+  }
+
+  get automaticPrint(): boolean {
+    return this._automaticPrint;
+  }
+
+  set automaticPrint(value: boolean) {
+    this._automaticPrint = value;
+    if (!value)
+      clearTimeout(this.automaticPrintTimeout);
+  }
+
+  get isPrinting(): boolean {
+    return this._isPrinting;
+  }
+
+  set isPrinting(value: boolean) {
+    this._isPrinting = value;
+  }
+
+  get automaticPrintCountdown(): number {
+    return this._automaticPrintCountdown;
+  }
+
+  set automaticPrintCountdown(value: number) {
+    this._automaticPrintCountdown = value;
   }
 
 }
