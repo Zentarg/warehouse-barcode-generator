@@ -97,6 +97,11 @@ button {
     &:hover {
         background-color: $primary-dark-blue-hover;
     }
+
+    &:disabled {
+        background-color: $secondary-grey;
+        cursor: not-allowed;
+    }
 }
 
 input:not([type=checkbox]):not([type=radio]), select {

@@ -23,7 +23,9 @@ export class DataComponent {
   companySearch: string = '';
 
   get products() {
-    return this.productsService.products.filter(product => product.EAN.includes(this.eanSearch) && product.company.includes(this.companySearch));
+    if (this.productsService.products.length === 0) 
+      return [];
+    return this.productsService.products.filter(product => product.EAN?.includes(this.eanSearch) && product.company?.includes(this.companySearch));
   }
 
   triggerFileInput(): void {

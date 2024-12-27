@@ -15,5 +15,12 @@
             </div>
         </div>
     </div>
+    <div class="automatic-print-timer">
+        <label for="automatic-print-timer">Automatisk print timer (I sekunder)</label>
+        <div class="input-group">
+            <input min="0" type="number" id="automatic-print-timer" [(ngModel)]="automaticPrintTimer">
+            <button (click)="saveAutomaticPrintTimer()" [disabled]="isAutomaticPrintTimerSaved">{{isAutomaticPrintTimerSaved ? 'Gemt' : 'Gem'}}</button>
+        </div>
+    </div>
 </main>
 

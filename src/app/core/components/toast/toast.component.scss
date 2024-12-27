@@ -1,0 +1,61 @@
+@import 'variables';
+
+.toasts {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .toast {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        background-color: $primary-white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px $background-overlay;
+        width: 350px;
+        position: relative;
+        overflow: hidden;
+        .type-color {
+            &.success {
+                background-color: $accent-green;
+            }
+            &.error {
+                background-color: $accent-red;
+            }
+            &.warning {
+                background-color: $accent-yellow;
+            }
+            &.info {
+                background-color: $primary-white;
+            }
+            width: 20px;
+        }
+        .toast-content {
+            padding: 1rem;
+            span {
+                color: $text-primary;
+            }
+
+            .close-button {
+                position: absolute;
+                top: .5em;
+                right: .5em;
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+                color: $text-primary;
+        
+                &:hover {
+                    color: $accent-red;
+                }
+            }
+            
+        }
+    }
+
+}

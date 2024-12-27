@@ -1,5 +1,5 @@
 
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import bwipjs from 'bwip-js';
 import { Product } from '../../core/models/product';
 import { ProductsService } from '../../core/services/products.service';
@@ -9,6 +9,8 @@ import { BarcodeHelperService } from '../../core/services/barcode-helper.service
 import { After } from 'v8';
 import { PrintOptions } from '../../core/models/print-options';
 import { SettingsService } from '../../core/services/settings.service';
+import { ToastSettings, ToastType } from '../../core/models/toast-settings';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-barcodes',
@@ -17,7 +19,7 @@ import { SettingsService } from '../../core/services/settings.service';
   templateUrl: './barcodes.component.html',
   styleUrl: './barcodes.component.scss'
 })
-export class BarcodesComponent implements OnInit {
+export class BarcodesComponent implements OnInit, OnDestroy {
   _kolliBarcode: string = '';
   _selectedProduct: Product | undefined;
 
@@ -28,20 +30,32 @@ export class BarcodesComponent implements OnInit {
   _automaticPrint: boolean = false;
   _isPrinting: boolean = false;
   _automaticPrintCountdown: number = 0;
-  automaticPrintTimeout: any;
   automaticPrintCountdownInterval: any;
 
-  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef) {
+  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService) {
+  }
+  ngOnDestroy(): void {
+    clearInterval(this.automaticPrintCountdownInterval);
   }
 
   ngOnInit(): void {
     if (window.electron) {
       window.electron.ipcRenderer.on('print-started', (event, options: PrintOptions) => {
         this.afterPrint();
-        console.log(`Print started: ${options.SSCC} | ${options.EAN}`);
+        console.log(`Print started: EAN: ${options.EAN} | SSCC: ${options.SSCC}`);
+        this.toastService.showToast({
+          text: `Printer:<br>EAN: ${options.EAN} | SSCC: ${options.SSCC}`,
+          showCloseButton: false,
+          type: ToastType.success,
+        });
       });
       window.electron.ipcRenderer.on('print-failed', (event, errorType) => {
         console.log(`Print failed: ${errorType}`);
+        this.toastService.showToast({
+          text: `Print mislykkedes: ${errorType}`,
+          showCloseButton: true,
+          type: ToastType.error,
+        });
         this.isPrinting = false;
         this.cdr.detectChanges();
       });
@@ -106,7 +120,7 @@ export class BarcodesComponent implements OnInit {
       return;
 
     this.isPrinting = true;
-    this.automaticPrintCountdown = 10; // 10 seconds countdown
+    this.resetAutomaticPrintCountdown();
     this.automaticPrintCountdownInterval = setInterval(() => {
       this.automaticPrintCountdown = Math.round((this.automaticPrintCountdown - 0.1) * 10) / 10;
       if (this.automaticPrintCountdown <= 0) {
@@ -133,6 +147,10 @@ export class BarcodesComponent implements OnInit {
         clearInterval(this.automaticPrintCountdownInterval);
       }
     }, 100);
+  }
+
+  resetAutomaticPrintCountdown(): void {
+    this.automaticPrintCountdown = this.settingsService.settings.automaticPrintTimer ?? 10;
   }
 
   print(): void {
@@ -177,6 +195,7 @@ export class BarcodesComponent implements OnInit {
 
   set batchNumber(value: string) {
     this._batchNumber = value;
+    this.resetAutomaticPrintCountdown();
     this.updateBarcodes();
   }
 
@@ -186,6 +205,7 @@ export class BarcodesComponent implements OnInit {
 
   set expirationDate(value: string) {
     this._expirationDate = value;
+    this.resetAutomaticPrintCountdown();
     this.updateBarcodes();
   }
 
@@ -195,6 +215,7 @@ export class BarcodesComponent implements OnInit {
 
   set kolli(value: number) {
     this._kolli = value;
+    this.resetAutomaticPrintCountdown();
     this.updateBarcodes();
   }
 
@@ -226,7 +247,7 @@ export class BarcodesComponent implements OnInit {
   set automaticPrint(value: boolean) {
     this._automaticPrint = value;
     if (!value)
-      clearTimeout(this.automaticPrintTimeout);
+      clearInterval(this.automaticPrintCountdownInterval);
   }
 
   get isPrinting(): boolean {

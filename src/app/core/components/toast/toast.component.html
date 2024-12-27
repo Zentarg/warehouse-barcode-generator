@@ -1,0 +1,11 @@
+<div class="toasts">
+    <div class="toast" *ngFor="let toast of toasts$ | async">
+        <div class="type-color" [class]="toast.type"></div>
+        <div class="toast-content">
+            <span [innerHTML]="toast.text"></span>
+            <button (click)="removeToast(toast.id!)" class="close-button">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,20 +1,46 @@
 
-
-.printers {
+.container {
     display: flex;
-    flex-direction: row;
-    width: 100%;
-
+    flex-direction: column;
     gap: 2em;
-
-    .printer {
-        flex-grow: 1;
-
-    }
-    
-    .label-printer, .deliverynote-printer {
+    .printers {
         display: flex;
         flex-direction: row;
-        gap: 1em;
+        width: 100%;
+    
+        gap: 2em;
+    
+        .printer {
+            flex-grow: 1;
+    
+        }
+        
+        .label-printer, .deliverynote-printer {
+            display: flex;
+            flex-direction: row;
+            gap: 1em;
+        }
+    }
+
+    .automatic-print-timer {
+        .input-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: relative;
+            input {
+                padding-right: 75px;
+            }
+    
+            button {
+                position: absolute;
+                right: 5px;
+                width: 65px;
+                height: calc(100% - 10px);
+                padding: 0;
+                vertical-align: middle;
+                text-align: center;
+            }
+        }
     }
 }

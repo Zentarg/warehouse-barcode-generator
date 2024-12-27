@@ -6,6 +6,9 @@
     <router-outlet />
   </main>
 </div>
+<aside>
+  <app-toast></app-toast>
+</aside>
 <aside class="update" *ngIf="updateInProgress$ | async">
   <div class="content">
     <ng-container *ngIf="!(updateDownloaded$ | async)">

@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { NavComponent } from "./features/nav/nav.component";
 import { AsyncPipe, NgIf } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ToastComponent } from "./core/components/toast/toast.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavComponent, NgIf, AsyncPipe],
+  imports: [RouterOutlet, NavComponent, NgIf, AsyncPipe, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
