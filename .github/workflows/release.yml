@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'  # Triggers the workflow on version tags
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   build:
@@ -19,7 +20,14 @@ jobs:
           node-version: '18'  # Specify the Node.js version
 
       - name: Install dependencies
-        run: npm install
+        run: npm install      
+        
+      - name: Install wine and dependencies
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y wine64 wine32
+
 
       - name: Build the project
         run: npm run dist
