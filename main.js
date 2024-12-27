@@ -145,8 +145,44 @@ ipcMain.on('simulate-update-events', () => {
   }
 });
 
-// Simulate update events
+// Handle IPC message to get available printers
 ipcMain.handle('get-available-printers', async (event) => {
   const printers = await mainWindow.webContents.getPrintersAsync();
+  console.log(printers);
   event.sender.send('available-printers', printers);
+});
+
+// Handle IPC message for silent printing
+ipcMain.handle('print-silent', async (event, options) => {
+  const printOptions = {
+    silent: true,
+    printBackground: true,
+    deviceName: options.deviceName,
+    pagesPerSheet: 1,
+    pageSize: {
+      width: options.pageWidth,
+      height: options.pageHeight
+    },
+    dpi: options.dpi,
+  };
+  if (options.margins) {
+    printOptions.margins = {
+      marginType: 'custom',
+      top: options.margins.top,
+      bottom: options.margins.bottom,
+      left: options.margins.left,
+      right: options.margins.right
+    }
+  }
+  console.log(printOptions);
+
+  mainWindow.webContents.print(printOptions, (success, errorType) => {
+    if (!success) {
+      event.sender.send('print-failed', errorType);
+      console.error('Print failed:', errorType);
+    } else {
+      event.sender.send('print-started', options);
+      console.log('Print success');
+    }
+  });
 });

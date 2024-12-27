@@ -1,5 +1,5 @@
 
-import { AfterContentInit, AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import bwipjs from 'bwip-js';
 import { Product } from '../../core/models/product';
 import { ProductsService } from '../../core/services/products.service';
@@ -7,6 +7,8 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BarcodeHelperService } from '../../core/services/barcode-helper.service';
 import { After } from 'v8';
+import { PrintOptions } from '../../core/models/print-options';
+import { SettingsService } from '../../core/services/settings.service';
 
 @Component({
   selector: 'app-barcodes',
@@ -15,7 +17,7 @@ import { After } from 'v8';
   templateUrl: './barcodes.component.html',
   styleUrl: './barcodes.component.scss'
 })
-export class BarcodesComponent {
+export class BarcodesComponent implements OnInit {
   _kolliBarcode: string = '';
   _selectedProduct: Product | undefined;
 
@@ -29,7 +31,21 @@ export class BarcodesComponent {
   automaticPrintTimeout: any;
   automaticPrintCountdownInterval: any;
 
-  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService) {
+  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    if (window.electron) {
+      window.electron.ipcRenderer.on('print-started', (event, options: PrintOptions) => {
+        this.afterPrint();
+        console.log(`Print started: ${options.SSCC} | ${options.EAN}`);
+      });
+      window.electron.ipcRenderer.on('print-failed', (event, errorType) => {
+        console.log(`Print failed: ${errorType}`);
+        this.isPrinting = false;
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   updateBarcodes(): void {
@@ -86,15 +102,35 @@ export class BarcodesComponent {
   }
 
   startAutomaticPrint(): void {
+    if (!this.selectedProduct || !this.canAutomaticPrint)
+      return;
+
     this.isPrinting = true;
-    this.automaticPrintCountdown = 10;
+    this.automaticPrintCountdown = 10; // 10 seconds countdown
     this.automaticPrintCountdownInterval = setInterval(() => {
       this.automaticPrintCountdown = Math.round((this.automaticPrintCountdown - 0.1) * 10) / 10;
-      console.log(this.automaticPrintCountdown);
       if (this.automaticPrintCountdown <= 0) {
-        console.log("Printing");
+        const dpi = 96;
+        const cmToPixels = (cm: number) => Math.round(cm * dpi / 2.54);
+        const cmToMicrons = (cm: number) => cm * 10000;
+
+        const printOptions: PrintOptions = {
+          deviceName: this.settingsService.settings.labelPrinter!.name,
+          pageWidth: cmToMicrons(10),
+          pageHeight: cmToMicrons(15),
+          SSCC: this.selectedProduct!.SSCCWithoutChecksum,
+          EAN: this.selectedProduct!.EAN,
+          dpi: dpi,
+          margins: {
+            top: cmToPixels(0.5),
+            right: cmToPixels(0.5),
+            bottom: cmToPixels(0.5),
+            left: cmToPixels(0.5)
+          }
+        }
+        window.electron.ipcRenderer.invoke('print-silent', printOptions);
+
         clearInterval(this.automaticPrintCountdownInterval);
-        this.afterPrint();
       }
     }, 100);
   }
@@ -123,6 +159,7 @@ export class BarcodesComponent {
     this.productsService.saveProducts();
     
     this.isPrinting = false;
+    this.cdr.detectChanges();
   }
 
   get selectedProduct(): Product | undefined {
@@ -206,6 +243,10 @@ export class BarcodesComponent {
 
   set automaticPrintCountdown(value: number) {
     this._automaticPrintCountdown = value;
+  }
+
+  get canAutomaticPrint(): boolean {
+    return this.settingsService.settings.labelPrinter != undefined;
   }
 
 }

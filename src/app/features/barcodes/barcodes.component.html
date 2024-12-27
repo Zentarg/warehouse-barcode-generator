@@ -25,7 +25,7 @@
             <input type="number" id="kolli" [(ngModel)]="kolli">
         </div>
         <div class="print-controls">
-            <div class="automatic-print">
+            <div class="automatic-print" *ngIf="canAutomaticPrint">
                 <label for="automatic-print">
                     Automatisk Print
                     <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
