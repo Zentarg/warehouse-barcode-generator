@@ -6,6 +6,7 @@ export interface PrintOptions {
     EAN: string;
     margins: PrintMargins | undefined;
     dpi: number;
+    copies: number;
 }
 
 export interface PrintMargins {

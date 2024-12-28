@@ -164,6 +164,7 @@ ipcMain.handle('print-silent', async (event, options) => {
       height: options.pageHeight
     },
     dpi: options.dpi,
+    copies: options.copies || 1
   };
   if (options.margins) {
     printOptions.margins = {

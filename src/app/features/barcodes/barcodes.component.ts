@@ -121,6 +121,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
 
     this.isPrinting = true;
     this.resetAutomaticPrintCountdown();
+    clearInterval(this.automaticPrintCountdownInterval);
     this.automaticPrintCountdownInterval = setInterval(() => {
       this.automaticPrintCountdown = Math.round((this.automaticPrintCountdown - 0.1) * 10) / 10;
       if (this.automaticPrintCountdown <= 0) {
@@ -135,6 +136,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
           SSCC: this.selectedProduct!.SSCCWithoutChecksum,
           EAN: this.selectedProduct!.EAN,
           dpi: dpi,
+          copies: 2,
           margins: {
             top: cmToPixels(0.5),
             right: cmToPixels(0.5),
@@ -232,7 +234,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     this._kolli = this.products[0].kolli;
     this.selectedProduct = this.products[0];
 
-    if (this.automaticPrint)
+    if (this.automaticPrint && value != '' && this._batchNumber != '')
       this.startAutomaticPrint();
   }
 
