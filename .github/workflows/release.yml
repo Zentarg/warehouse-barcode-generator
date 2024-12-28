@@ -6,9 +6,6 @@ on:
       - 'v*.*.*'  # Triggers the workflow on version tags
   workflow_dispatch:  # Allows manual triggering of the workflow
   
-env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,5 +44,4 @@ jobs:
             dist-electron/latest-linux.yml
           token: ${{ secrets.GH_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
