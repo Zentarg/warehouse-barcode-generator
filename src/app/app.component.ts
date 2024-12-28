@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NavComponent } from "./features/nav/nav.component";
 import { AsyncPipe, NgIf } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, filter, Observable } from 'rxjs';
 import { ToastComponent } from "./core/components/toast/toast.component";
 
 @Component({
@@ -20,11 +20,17 @@ export class AppComponent implements OnInit{
   updateInProgress$: Observable<boolean> = this.updateInProgressSubject$.asObservable();
   updateDownloadedSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   updateDownloaded$: Observable<boolean> = this.updateDownloadedSubject$.asObservable();
+
+  private pageStyle: HTMLStyleElement;
   
-  constructor() {
+  constructor(private router: Router) {
+    this.pageStyle = document.createElement('style');
+    document.head.appendChild(this.pageStyle);
     
   }
   async ngOnInit(): Promise<void> {
+
+
     if (window.electronUpdater) {
       window.electronUpdater.onUpdateAvailable(() => {
         this.updateInProgressSubject$.next(true);
@@ -43,6 +49,27 @@ export class AppComponent implements OnInit{
         console.log('Update downloaded, ready to install.');
       });
     }
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      switch(event.urlAfterRedirects) {
+        case '/barcodes':
+          this.setPageStyle('10cm 15cm', '.5cm');
+          break;
+        case '/data':
+        case '/settings':
+        case '/packing-slip':
+          this.setPageStyle('auto', 'auto');
+          break;
+      }
+    });
+  }
+
+  setPageStyle(size: string, margin: string) {
+    this.pageStyle.innerHTML = 
+    `@page {
+      size: ${size};
+      margin: ${margin};
+    }`;
   }
 
   // Method to trigger fake events

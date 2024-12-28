@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="controls">
+    <div class="controls hide-print">
         <div class="filters">
             <div class="company-search">
                 <label for="company">Søg på Firma</label>
@@ -10,7 +10,9 @@
                 <input type="text" id="ean" [(ngModel)]="eanSearch">
             </div>
         </div>
-        <div class="import-export">
+        
+        <div class="buttons">
+            <button class="print" (click)="print()">Print</button>
             <button class="export-data" (click)="export()">Eksporter data</button>
             <button class="insert-data" (click)="triggerFileInput()">Indsæt data</button>
         </div>

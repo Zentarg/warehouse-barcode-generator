@@ -48,5 +48,8 @@ export class DataComponent {
   export(): void {
     this.csvHandlerService.exportCSV(this.productsService.products);
   }
+  print(): void {
+    window.print();
+  }
   
 }

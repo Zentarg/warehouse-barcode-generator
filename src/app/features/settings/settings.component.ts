@@ -17,8 +17,8 @@ export class SettingsComponent implements OnInit {
   get labelPrinter(): Printer | undefined {
     return this.settingsService.settings.labelPrinter;
   }
-  get deliveryNotePrinter(): Printer | undefined {
-    return this.settingsService.settings.deliveryNotePrinter;
+  get packingSlipPrinter(): Printer | undefined {
+    return this.settingsService.settings.packingSlipPrinter;
   }
 
   private _automaticPrintTimer: number | undefined;
@@ -43,7 +43,7 @@ export class SettingsComponent implements OnInit {
     let modal = await this.modalService.open(ChoosePrinterModalComponent, {hideCloseButton: false});
     modal.contentInstance.title = 'Vælg følgeseddel printer';
     modal.contentInstance.callbackFn = async (printer: Printer) => {
-      this.settingsService.setSetting('deliveryNotePrinter', printer);
+      this.settingsService.setSetting('packingSlipPrinter', printer);
     };
   }
 
