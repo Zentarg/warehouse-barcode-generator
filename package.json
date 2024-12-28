@@ -1,6 +1,6 @@
 {
   "name": "warehouse-barcode-generator",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "main": "main.js",
   "author": {
     "name": "Andreas Giehm",
@@ -10,7 +10,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "dist": "ng build && electron-builder --linux --win && node scripts/replace-latest-yml-dashes.js",
+    "dist": "ng build && electron-builder --linux --win --publish never && node scripts/replace-latest-yml-dashes.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "electron:dev": "cross-env ELECTRON_START_URL=http://localhost:4200 electron .",
