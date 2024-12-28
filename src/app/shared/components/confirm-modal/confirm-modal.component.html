@@ -1,0 +1,17 @@
+<div class="confirm-modal">
+    <div class="content">
+        <h3 class="header" [innerHTML]="header"></h3>
+        <p class="body" [innerHTML]="body"></p>
+    </div>
+    <div class="btns">
+        <button class="btn" (click)="accept()">
+            <span [class.callbacking]="callbacking">
+                {{confirmBtn}}
+            </span>
+            <span class="loader" *ngIf="callbacking"></span>
+        </button>
+        <button class="red" (click)="cancel()">
+            {{cancelBtn}}
+        </button>
+    </div>
+</div>

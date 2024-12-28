@@ -29,6 +29,7 @@
                 <th>Produkt</th>
                 <th>SSCC</th>
                 <th>Kolli</th>
+                <th class="hide-print">Handling</th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +39,9 @@
                 <td>{{product.title}}</td>
                 <td>{{product.SSCCWithoutChecksum}}{{barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}}</td>
                 <td>{{product.kolli}}</td>
+                <td class="hide-print">
+                    <button (click)="removeProduct(product)">Slet</button>
+                </td>
             </tr>
         </tbody>
     </table>

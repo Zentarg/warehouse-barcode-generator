@@ -28,6 +28,11 @@ export class ProductsService {
     this.saveProducts();
   }
 
+  removeProducts(products: Product[]): void {
+    this._products = this._products.filter(p => !products.find(product => product.EAN === p.EAN));
+    this.saveProducts();
+  }
+
   setproducts(products: Product[]): void {
     this._products = products;
     this.saveProducts();

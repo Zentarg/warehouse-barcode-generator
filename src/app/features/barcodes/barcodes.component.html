@@ -26,8 +26,10 @@
         </div>
         <div class="print-controls">
             <div class="automatic-print" *ngIf="canAutomaticPrint">
-                <label for="automatic-print">
-                    Automatisk Print
+                <label for="automatic-print" class="checkbox-label">
+                    <span>
+                        Automatisk Print
+                    </span>
                     <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
                 </label>
                 <span *ngIf="isPrinting">Printer om {{automaticPrintCountdown}}s</span>

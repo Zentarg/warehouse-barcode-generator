@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../core/services/products.service';
 import { CsvHandlerService } from '../../core/services/csv-handler.service';
 import { BarcodeHelperService } from '../../core/services/barcode-helper.service';
+import { ModalService } from '../../core/services/modal.service';
+import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-data',
@@ -16,7 +18,7 @@ import { BarcodeHelperService } from '../../core/services/barcode-helper.service
 export class DataComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private productsService: ProductsService, private csvHandlerService: CsvHandlerService, public barcodeHelperService: BarcodeHelperService) {
+  constructor(private productsService: ProductsService, private csvHandlerService: CsvHandlerService, public barcodeHelperService: BarcodeHelperService, private modalService: ModalService) {
   }
 
   eanSearch: string = '';
@@ -50,6 +52,16 @@ export class DataComponent {
   }
   print(): void {
     window.print();
+  }
+
+  async removeProduct(product: Product): Promise<void> {
+    let modal = await this.modalService.open(ConfirmModalComponent, {});
+    modal.contentInstance.header = "Er du sikker på at du vil slette dette produkt?";
+    modal.contentInstance.body = `EAN: ${product.EAN}<br>${product.title.replaceAll('\\n', '<br>')}`;
+    modal.contentInstance.confirmBtn = "Slet";
+    modal.contentInstance.callbackFn = async () => {
+      this.productsService.removeProducts([product]);
+    };
   }
   
 }

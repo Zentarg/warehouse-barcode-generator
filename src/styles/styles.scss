@@ -102,6 +102,17 @@ button {
         background-color: $secondary-grey;
         cursor: not-allowed;
     }
+
+    &.red {
+        background-color: $accent-red;
+        &:hover {
+            background-color: $accent-red-hover;
+        }
+    }
+
+    &:focus-visible {
+        outline-offset: 3px;
+    }
 }
 
 input:not([type=checkbox]):not([type=radio]), select {
@@ -113,7 +124,60 @@ input:not([type=checkbox]):not([type=radio]), select {
     background: $primary-white;
 }
 
+label[for] {
+    cursor: pointer;
+    user-select: none;
+}
+
+input[type=checkbox] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $secondary-grey;
+    border-radius: 3px;
+    background-color: $primary-white;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    margin: 0;
+
+    &:checked {
+        background-color: $primary-dark-blue;
+        border-color: $primary-dark-blue;
+    }
+
+    &:checked::after {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 12px;
+        border: solid $primary-white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        scale: 0.75;
+    }
+
+    &:hover {
+        border-color: $primary-dark-blue-hover;
+    }
+
+    &:disabled {
+        background-color: $secondary-grey;
+        border-color: $secondary-grey;
+        cursor: not-allowed;
+    }
+}
+
+
+
 label {
     display: block;
     margin-bottom: 5px;
+
+    &.checkbox-label {
+        display: flex;
+        align-items: flex-end;
+        gap: .5rem;
+    }
 }

@@ -1,4 +1,4 @@
-<div class="modal-overlay" [class.fullscreen]="modalSettings?.fullscreen" [class]="modalSettings?.size" (click)="close()">
+<div class="modal-overlay" #modalContainer tabindex="0" [class.fullscreen]="modalSettings?.fullscreen" [class]="modalSettings?.size" (click)="close()" (keydown.escape)="close()" (keydown)="trapFocus($event)">
     <div class="modal-container" (click)="$event.stopPropagation()">
       <button class="close-button" *ngIf="!modalSettings?.hideCloseButton" (click)="close()">
         <i class="bi bi-x-lg"></i>
