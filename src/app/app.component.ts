@@ -33,7 +33,7 @@ export class AppComponent implements OnInit{
   
       // Listen for download progress
       window.electronUpdater.onDownloadProgress(async (event, progress) => {
-        this.downloadProgressSubject$.next(progress.percent);
+        this.downloadProgressSubject$.next(Math.round(progress.percent));
         console.log(`Download progress: ${Math.round(progress.percent)}%`);
       });
   
