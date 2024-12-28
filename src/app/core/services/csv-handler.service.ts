@@ -30,7 +30,7 @@ export class CsvHandlerService {
               break;
             case 'SSCCWithoutChecksum':
               let val = value.trim();
-              if (this.barcodeHelperService.hasValidCheckDigit(val))
+              if (this.barcodeHelperService.hasValidCheckDigit(val) && val.length == 18)
                 obj[key] = val.slice(0, -1);
               else
                 obj[key] = val;
