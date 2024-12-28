@@ -45,6 +45,7 @@ jobs:
             dist-electron/*.blockmap
             dist-electron/latest.yml
             dist-electron/latest-linux.yml
+          token: ${{ secrets.GH_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
