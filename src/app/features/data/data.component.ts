@@ -39,7 +39,7 @@ export class DataComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target?.result as string;
-        this.productsService.setproducts(this.csvHandlerService.processCSV(text));
+        this.productsService.addProducts(this.csvHandlerService.processCSV(text));
       };
       reader.readAsText(file);
     }

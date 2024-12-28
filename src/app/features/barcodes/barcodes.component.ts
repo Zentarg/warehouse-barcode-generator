@@ -36,30 +36,38 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     clearInterval(this.automaticPrintCountdownInterval);
+    if (window.electron) {
+      window.electron.ipcRenderer.removeAllListeners('print-started');
+      window.electron.ipcRenderer.removeAllListeners('print-failed');
+    }
   }
 
   ngOnInit(): void {
     if (window.electron) {
-      window.electron.ipcRenderer.on('print-started', (event, options: PrintOptions) => {
-        this.afterPrint();
-        console.log(`Print started: EAN: ${options.EAN} | SSCC: ${options.SSCC}`);
-        this.toastService.showToast({
-          text: `Printer:<br>EAN: ${options.EAN} | SSCC: ${options.SSCC}`,
-          showCloseButton: false,
-          type: ToastType.success,
-        });
-      });
-      window.electron.ipcRenderer.on('print-failed', (event, errorType) => {
-        console.log(`Print failed: ${errorType}`);
-        this.toastService.showToast({
-          text: `Print mislykkedes: ${errorType}`,
-          showCloseButton: true,
-          type: ToastType.error,
-        });
-        this.isPrinting = false;
-        this.cdr.detectChanges();
-      });
+      window.electron.ipcRenderer.on('print-started', this.handlePrintStarted.bind(this));
+      window.electron.ipcRenderer.on('print-failed', this.handlePrintFailed.bind(this));
     }
+  }
+
+  handlePrintStarted(event: any, options: PrintOptions) {
+    this.afterPrint();
+    console.log(`Print started: EAN: ${options.EAN} | SSCC: ${options.SSCC}`);
+    this.toastService.showToast({
+      text: `Printer:<br>EAN: ${options.EAN}<br>SSCC: ${options.SSCC}`,
+      showCloseButton: false,
+      type: ToastType.success,
+    });
+  }
+
+  handlePrintFailed(event: any, error: any) {
+    console.log(`Print failed: ${error.errorType}`);
+    this.toastService.showToast({
+      text: `Print mislykkedes: ${error.errorType}<br>EAN: ${error.options.EAN}<br>SSCC: ${error.options.SSCC}`,
+      showCloseButton: true,
+      type: ToastType.error,
+    });
+    this.isPrinting = false;
+    this.cdr.detectChanges();
   }
 
   updateBarcodes(): void {

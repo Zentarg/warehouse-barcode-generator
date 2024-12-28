@@ -40,7 +40,6 @@ export class ChoosePrinterModalComponent implements OnInit {
   async select() {
     this.callbacking = true;
     try {
-      console.log(this.selectedPrinter);
       await this.callbackFn(this.selectedPrinter);
       this.modalService.closeActiveModal();
     } catch {}

@@ -51,14 +51,6 @@ async function createWindow() {
     mainWindow.loadURL(startUrl);
   });
 
-  // Handle navigation to base path on reload
-  // mainWindow.webContents.on('will-navigate', (event, newUrl) => {
-  //   if (newUrl !== startUrl) {
-  //     event.preventDefault();
-  //     mainWindow.loadURL(startUrl);
-  //   }
-  // });
-
   // Check for updates
   autoUpdater.checkForUpdatesAndNotify();
 }
@@ -179,8 +171,8 @@ ipcMain.handle('print-silent', async (event, options) => {
 
   mainWindow.webContents.print(printOptions, (success, errorType) => {
     if (!success) {
-      event.sender.send('print-failed', errorType);
-      console.error('Print failed:', errorType);
+      event.sender.send('print-failed', {error: errorType, options: options});
+      console.error('Print failed:', errorType, options);
     } else {
       event.sender.send('print-started', options);
       console.log('Print success');

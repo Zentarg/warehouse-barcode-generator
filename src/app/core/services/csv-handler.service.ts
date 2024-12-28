@@ -1,46 +1,58 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
 import { BarcodeHelperService } from './barcode-helper.service';
+import { ToastService } from './toast.service';
+import { ToastType } from '../models/toast-settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CsvHandlerService {
 
-  constructor(private barcodeHelperService: BarcodeHelperService) { }
+  constructor(private barcodeHelperService: BarcodeHelperService, private toastService: ToastService) { }
 
 
 
   
   processCSV(csv: string): Product[] {
-    const lines = csv.split('\n');
-    const headers = lines[0].split(',');
-    const data = lines.slice(1).map(line => {
-      const values = this.parseCSVLine(line);
-      return headers.reduce((obj, header, index) => {
-        const key = header.trim() as keyof Product;
-        let value: string | number = values[index].trim();
-
-        switch (key) {
-          case 'kolli':
-            obj[key] = parseInt(value, 10);
-            break;
-          case 'SSCCWithoutChecksum':
-            let val = value.trim();
-            if (this.barcodeHelperService.hasValidCheckDigit(val))
-              obj[key] = val.slice(0, -1);
-            else
-              obj[key] = val;
-            break;
-          default:
-            obj[key] = value.trim();
-            break;
-        }
-
-        return obj;
-      }, {} as Product);
-    });
-    return data;
+    try {
+      const lines = csv.split('\n').filter(line => line.trim() !== '');
+      const headers = lines[0].split(',');
+      const data = lines.slice(1).map(line => {
+        const values = this.parseCSVLine(line);
+        return headers.reduce((obj, header, index) => {
+          const key = header.trim() as keyof Product;
+          let value: string | number = values[index].trim();
+  
+          switch (key) {
+            case 'kolli':
+              obj[key] = parseInt(value, 10);
+              break;
+            case 'SSCCWithoutChecksum':
+              let val = value.trim();
+              if (this.barcodeHelperService.hasValidCheckDigit(val))
+                obj[key] = val.slice(0, -1);
+              else
+                obj[key] = val;
+              break;
+            default:
+              obj[key] = value.trim();
+              break;
+          }
+  
+          return obj;
+        }, {} as Product);
+      });
+      return data;
+    } catch(e) {
+      console.error(e);
+      this.toastService.showToast({
+        text: 'Invalid CSV format: ' + e,
+        type: ToastType.error,
+        showCloseButton: true,
+      });
+      return [];
+    }
   }
 
   private parseCSVLine(line: string): string[] {

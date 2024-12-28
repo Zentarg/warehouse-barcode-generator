@@ -1,5 +1,6 @@
 // filepath: /preload.js
 const { contextBridge, ipcRenderer } = require('electron');
+const { removeListener } = require('process');
 
 contextBridge.exposeInMainWorld('electronStore', {
   set: (key, value) => ipcRenderer.invoke('store-set', key, value),
@@ -16,6 +17,8 @@ contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
     send: (channel, ...args) => ipcRenderer.send(channel, ...args),
     on: (channel, listener) => ipcRenderer.on(channel, listener),
-    invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
+    removeListener: (channel, listener) => ipcRenderer.removeListener(channel, listener),
+    invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
+    removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
   }
 });
