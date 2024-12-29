@@ -40,7 +40,10 @@
                 <td>{{product.SSCCWithoutChecksum}}{{barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}}</td>
                 <td>{{product.kolli}}</td>
                 <td class="hide-print">
-                    <button (click)="removeProduct(product)">Slet</button>
+                    <div class="actions">
+                        <button class="icon" (click)="editProduct(product)"><i class="bi bi-pencil"></i></button>
+                        <button class="red icon" (click)="removeProduct(product)"><i class="bi bi-trash3"></i></button>
+                    </div>
                 </td>
             </tr>
         </tbody>

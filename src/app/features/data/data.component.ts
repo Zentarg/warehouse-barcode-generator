@@ -7,6 +7,8 @@ import { CsvHandlerService } from '../../core/services/csv-handler.service';
 import { BarcodeHelperService } from '../../core/services/barcode-helper.service';
 import { ModalService } from '../../core/services/modal.service';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
+import { EditProductModalComponent } from './components/edit-product-modal/edit-product-modal.component';
+import { ModalSize } from '../../core/models/modal-settings';
 
 @Component({
   selector: 'app-data',
@@ -63,5 +65,17 @@ export class DataComponent {
       this.productsService.removeProducts([product]);
     };
   }
+
+  async editProduct(product: Product): Promise<void> {
+    let modal = await this.modalService.open(EditProductModalComponent, {
+      size: ModalSize.Large
+    });
+    modal.contentInstance.header = `Rediger produkt (EAN ${product.EAN})`;
+    modal.contentInstance.confirmBtn = "Rediger";
+    modal.contentInstance.product = product;
+    modal.contentInstance.callbackFn = async (editedProduct: Product) => {
+      this.productsService.updateProduct(product.EAN, editedProduct);
+    };
+  };
   
 }

@@ -33,6 +33,12 @@ export class ProductsService {
     this.saveProducts();
   }
 
+  updateProduct(ean: string, product: Product): void {
+    const index = this._products.findIndex(p => p.EAN === ean);
+    this._products[index] = product;
+    this.saveProducts();
+  }
+
   setproducts(products: Product[]): void {
     this._products = products;
     this.saveProducts();
