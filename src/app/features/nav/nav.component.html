@@ -4,4 +4,9 @@
             <a [routerLink]="link.route" routerLinkActive="active"> <i [class]="link.icon"></i> {{link.label}}</a>
         </li>
     </ul>
+    <ul>
+        <li *ngFor="let link of bottomNavLinks">
+            <a [routerLink]="link.route" routerLinkActive="active"> <i [class]="link.icon"></i> {{link.label}}</a>
+        </li>
+    </ul>
 </div>

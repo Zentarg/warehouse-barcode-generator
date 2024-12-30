@@ -26,9 +26,13 @@
             <tr>
                 <th>Firma</th>
                 <th>EAN-nr.</th>
+                <th>Vare Nr</th>
                 <th>Produkt</th>
+                <th>Titel</th>
                 <th>SSCC</th>
                 <th>Kolli</th>
+                <th>Antal pr. kolli</th>
+                <th>Art</th>
                 <th class="hide-print">Handling</th>
             </tr>
         </thead>
@@ -36,9 +40,13 @@
             <tr *ngFor="let product of products">
                 <td>{{product.company}}</td>
                 <td>{{product.EAN}}</td>
+                <td>{{product.productNumber}}</td>
+                <td>{{product.productName}}</td>
                 <td>{{product.title}}</td>
                 <td>{{product.SSCCWithoutChecksum}}{{barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}}</td>
                 <td>{{product.kolli}}</td>
+                <td>{{product.amountPerKolli}}</td>
+                <td>{{product.type}}</td>
                 <td class="hide-print">
                     <div class="actions">
                         <button class="icon" (click)="editProduct(product)"><i class="bi bi-pencil"></i></button>

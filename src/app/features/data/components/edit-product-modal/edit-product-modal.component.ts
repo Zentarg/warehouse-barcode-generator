@@ -84,5 +84,9 @@ export class EditProductModalComponent implements OnInit{
     return JSON.stringify(this.product) !== JSON.stringify(this.tempProduct);
   }
 
+  ProductKeyToLabel(key: keyof Product): string {
+    return ProductKeyToLabel(key);
+  }
+
 
 }

@@ -1,0 +1,8 @@
+table {
+    .packing-slip {
+        display: flex;
+        flex-direction: row;
+        gap: .5rem;
+        align-items: center;
+    }
+}

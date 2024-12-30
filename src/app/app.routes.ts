@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BarcodesComponent } from './features/barcodes/barcodes.component';
 import { DataComponent } from './features/data/data.component';
 import { SettingsComponent } from './features/settings/settings.component';
+import { HistoryComponent } from './features/history/history.component';
 
 export const routes: Routes = [
     {
@@ -18,6 +19,11 @@ export const routes: Routes = [
         path: 'settings',
         pathMatch: 'full',
         component: SettingsComponent
+    },
+    {
+        path: 'history',
+        pathMatch: 'full',
+        component: HistoryComponent
     },
     {
         path: '',

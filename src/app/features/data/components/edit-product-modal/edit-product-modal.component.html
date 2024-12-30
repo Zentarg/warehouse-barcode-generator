@@ -5,26 +5,47 @@
 
         <div class="input-group">
             <div class="company">
-                <label for="company" [class.changed]="product.company != tempProduct.company">Firma</label>
+                <label for="company" [class.changed]="product.company != tempProduct.company">{{ProductKeyToLabel('company')}}</label>
                 <input type="text" id="company" [(ngModel)]="tempProduct.company">
             </div>
             <div class="ean">
-                <label for="ean" [class.changed]="product.EAN != tempProduct.EAN">EAN-nr.</label>
+                <label for="ean" [class.changed]="product.EAN != tempProduct.EAN">{{ProductKeyToLabel('EAN')}}</label>
                 <input type="text" id="ean" [(ngModel)]="tempProduct.EAN">
             </div>
         </div>
+
+        <div class="input-group">
+            <div class="productNumber">
+                <label for="productNumber" [class.changed]="product.productNumber != tempProduct.productNumber">{{ProductKeyToLabel('productNumber')}}</label>
+                <input type="text" id="productNumber" [(ngModel)]="tempProduct.productNumber">
+            </div>
+            <div class="productName">
+                <label for="productName" [class.changed]="product.productName != tempProduct.productName">{{ProductKeyToLabel('productName')}}</label>
+                <input type="text" id="productName" [(ngModel)]="tempProduct.productName">
+            </div>
+        </div>
         <div class="title">
-            <label for="title" [class.changed]="product.title != tempProduct.title">Produkt</label>
+            <label for="title" [class.changed]="product.title != tempProduct.title">{{ProductKeyToLabel('title')}}</label>
             <textarea id="title" [(ngModel)]="tempProduct.title" rows="3"></textarea>
         </div>
         <div class="input-group">
             <div class="sscc">
-                <label for="sscc" [class.changed]="product.SSCCWithoutChecksum != tempProduct.SSCCWithoutChecksum">SSCC (Uden validerings ciffer)</label>
+                <label for="sscc" [class.changed]="product.SSCCWithoutChecksum != tempProduct.SSCCWithoutChecksum">{{ProductKeyToLabel('SSCCWithoutChecksum')}} (Uden validerings ciffer)</label>
                 <input type="text" id="sscc" [(ngModel)]="tempProduct.SSCCWithoutChecksum">
             </div>
             <div class="kolli">
-                <label for="kolli" [class.changed]="product.kolli != tempProduct.kolli">Kolli</label>
+                <label for="kolli" [class.changed]="product.kolli != tempProduct.kolli">{{ProductKeyToLabel('kolli')}}</label>
                 <input type="number" id="kolli" [(ngModel)]="tempProduct.kolli">
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="type">
+                <label for="type" [class.changed]="product.type != tempProduct.type">{{ProductKeyToLabel('type')}}</label>
+                <input type="text" id="type" [(ngModel)]="tempProduct.type">
+            </div>
+            <div class="amountPerKolli">
+                <label for="amountPerKolli" [class.changed]="product.amountPerKolli != tempProduct.amountPerKolli">{{ProductKeyToLabel('amountPerKolli')}}</label>
+                <input type="number" id="amountPerKolli" [(ngModel)]="tempProduct.amountPerKolli">
             </div>
         </div>
     </div>

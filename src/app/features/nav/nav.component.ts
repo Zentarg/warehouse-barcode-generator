@@ -25,6 +25,14 @@ export class NavComponent {
       icon: 'bi bi-file-earmark-spreadsheet'
     },
     {
+      label: 'Historik',
+      route: '/history',
+      icon: 'bi bi-clock-history'
+    },
+  ]
+
+  bottomNavLinks: NavigationLink[] = [
+    {
       label: 'Indstillinger',
       route: '/settings',
       icon: 'bi bi-gear'

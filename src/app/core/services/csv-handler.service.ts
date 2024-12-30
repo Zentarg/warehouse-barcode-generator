@@ -26,7 +26,13 @@ export class CsvHandlerService {
   
           switch (key) {
             case 'kolli':
-              obj[key] = parseInt(value, 10);
+            case 'productNumber':
+            case 'amountPerKolli':
+              const parsedInt = parseInt(value, 10);
+              if (isNaN(parsedInt))
+                obj[key] = 0;
+              else
+                obj[key] = parsedInt;
               break;
             case 'SSCCWithoutChecksum':
               let val = value.trim();

@@ -11,6 +11,7 @@ import { PrintOptions } from '../../core/models/print-options';
 import { SettingsService } from '../../core/services/settings.service';
 import { ToastSettings, ToastType } from '../../core/models/toast-settings';
 import { ToastService } from '../../core/services/toast.service';
+import { PrintedProductsService } from '../../core/services/printed-products.service';
 
 @Component({
   selector: 'app-barcodes',
@@ -32,7 +33,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   _automaticPrintCountdown: number = 0;
   automaticPrintCountdownInterval: any;
 
-  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService) {
+  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService) {
   }
   ngOnDestroy(): void {
     clearInterval(this.automaticPrintCountdownInterval);
@@ -183,8 +184,25 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     const dupedProduct = this.products.find(product => product.SSCCWithoutChecksum == `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`);
     if (dupedProduct)
       alert(`Et produkt med samme SSCC eksisterer allerede: EAN: ${dupedProduct.EAN} | SSCC: ${dupedProduct.SSCCWithoutChecksum} | Titel: ${dupedProduct.title.replaceAll('\\n', ' ')}`);
+
+
+
+    //Add to history before saving the incremented SSCC
+    const copiedProduct = JSON.parse(JSON.stringify(this.products[index]));
+
+    const printedProduct = { 
+      product: copiedProduct, 
+      printDate: new Date(),
+      batchNumber: this._batchNumber,
+      bestBefore: this._expirationDate,
+      kolli: this._kolli,
+      packingSlipId: 0, // ToDo: Implement packing slip
+    };
+    this.printedProductsService.addPrintedProducts([printedProduct]);
+
     this.products[index].SSCCWithoutChecksum = `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`;
     this.productsService.saveProducts();
+
     
     this.isPrinting = false;
     this.cdr.detectChanges();

@@ -1,0 +1,28 @@
+<div class="container">
+    <table class="products">
+        <thead>
+            <tr>
+                <th>Bedst Før</th>
+                <th>EAN-nr.</th>
+                <th>Kolli</th>
+                <th>SSCC</th>
+                <th>Kørt Dato</th>
+                <th>Antal</th>
+                <th width="10px">Følgeseddel</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let printedProduct of orderedPrintedProducts">
+                <td>{{barcodeHelperService.addSeperatorsToDate(printedProduct.bestBefore || '')}}</td>
+                <td>{{printedProduct.product.EAN}}</td>
+                <td>{{printedProduct.kolli}}</td>
+                <td>{{printedProduct.product.SSCCWithoutChecksum}}{{barcodeHelperService.calculateGS1128CheckDigit(printedProduct.product.SSCCWithoutChecksum)}}</td>
+                <td>{{printedProduct.drivenDate ? (printedProduct.drivenDate | date : 'dd.MM.yy') : 'Ikke kørt'}}</td>
+                <td>{{getEANPrintCount(printedProduct.product.EAN)}}</td>
+                <td>
+                    <button >Åbn følgeseddel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

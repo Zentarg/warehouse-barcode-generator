@@ -39,7 +39,7 @@ export class ProductsService {
     this.saveProducts();
   }
 
-  setproducts(products: Product[]): void {
+  setProducts(products: Product[]): void {
     this._products = products;
     this.saveProducts();
   }
