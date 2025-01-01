@@ -206,7 +206,8 @@ ipcMain.handle('print', async (event, options) => {
 
   mainWindow.webContents.print(printOptions, (success, errorType) => {
     if (!success) {
-      event.sender.send('print-failed', {error: errorType, options: options});
+      if (errorType != 'Print job canceled')
+        event.sender.send('print-failed', {errorType: errorType, options: options});
       console.error('Print failed:', errorType, options);
     } else {
       event.sender.send('print-started', options);

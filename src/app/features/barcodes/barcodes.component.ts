@@ -206,7 +206,6 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     let sscc = this.products[index].SSCCWithoutChecksum;
     if (this.products[index].SSCCWithoutChecksum.length == 18)
       sscc = this.products[index].SSCCWithoutChecksum.slice(0, -1);
-    debugger;
     const leadingZeros = this.barcodeHelperService.countLeadingZeros(this.products[index].SSCCWithoutChecksum);
 
     // Handle using bigint as the number is too large for normal numbers
