@@ -179,3 +179,38 @@ ipcMain.handle('print-silent', async (event, options) => {
     }
   });
 });
+
+// Handle IPC message for printing
+ipcMain.handle('print', async (event, options) => {
+  const printOptions = {
+    printBackground: true,
+    deviceName: options.deviceName,
+    pagesPerSheet: 1,
+    pageSize: {
+      width: options.pageWidth,
+      height: options.pageHeight
+    },
+    dpi: options.dpi,
+    copies: options.copies || 1
+  };
+  if (options.margins) {
+    printOptions.margins = {
+      marginType: 'custom',
+      top: options.margins.top,
+      bottom: options.margins.bottom,
+      left: options.margins.left,
+      right: options.margins.right
+    }
+  }
+  console.log(printOptions);
+
+  mainWindow.webContents.print(printOptions, (success, errorType) => {
+    if (!success) {
+      event.sender.send('print-failed', {error: errorType, options: options});
+      console.error('Print failed:', errorType, options);
+    } else {
+      event.sender.send('print-started', options);
+      console.log('Print success');
+    }
+  });
+});

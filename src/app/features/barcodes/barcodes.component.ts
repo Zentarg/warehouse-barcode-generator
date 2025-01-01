@@ -54,16 +54,17 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     this.afterPrint();
     console.log(`Print started: EAN: ${options.EAN} | SSCC: ${options.SSCC}`);
     this.toastService.showToast({
-      text: `Printer:<br>EAN: ${options.EAN}<br>SSCC: ${options.SSCC}`,
+      text: `Printer:<br>EAN: ${options.EAN}<br>SSCC: ${options.SSCC + this.barcodeHelperService.calculateGS1128CheckDigit(options.SSCC)}`,
       showCloseButton: false,
       type: ToastType.success,
+      duration: 5000,
     });
   }
 
   handlePrintFailed(event: any, error: any) {
     console.log(`Print failed: ${error.errorType}`);
     this.toastService.showToast({
-      text: `Print mislykkedes: ${error.errorType}<br>EAN: ${error.options.EAN}<br>SSCC: ${error.options.SSCC}`,
+      text: `Print mislykkedes: ${error.errorType}<br>EAN: ${error.options.EAN}<br>SSCC: ${error.options.SSCC + this.barcodeHelperService.calculateGS1128CheckDigit(error.options.SSCC)}`,
       showCloseButton: true,
       type: ToastType.error,
     });
@@ -165,10 +166,34 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   }
 
   print(): void {
-    window.onafterprint = () => {
-      this.afterPrint();
+
+    if (window.electron) {
+      const dpi = 96;
+        const cmToPixels = (cm: number) => Math.round(cm * dpi / 2.54);
+        const cmToMicrons = (cm: number) => cm * 10000;
+
+        const printOptions: PrintOptions = {
+          deviceName: this.settingsService.settings.labelPrinter?.name ?? '',
+          pageWidth: cmToMicrons(10),
+          pageHeight: cmToMicrons(15),
+          SSCC: this.selectedProduct!.SSCCWithoutChecksum,
+          EAN: this.selectedProduct!.EAN,
+          dpi: dpi,
+          copies: 2,
+          margins: {
+            top: cmToPixels(0.5),
+            right: cmToPixels(0.5),
+            bottom: cmToPixels(0.5),
+            left: cmToPixels(0.5)
+          }
+        }
+        window.electron.ipcRenderer.invoke('print', printOptions);
+    } else {
+      window.onafterprint = () => {
+        this.afterPrint();
+      }
+      window.print();
     }
-    window.print();
   }
 
   afterPrint(): void {
@@ -176,11 +201,14 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     if (index == -1)
       return;
     let sscc = this.products[index].SSCCWithoutChecksum;
-    if (this.barcodeHelperService.hasValidCheckDigit(this.products[index].SSCCWithoutChecksum))
+    if (this.products[index].SSCCWithoutChecksum.length == 18)
       sscc = this.products[index].SSCCWithoutChecksum.slice(0, -1);
+    debugger;
     const leadingZeros = this.barcodeHelperService.countLeadingZeros(this.products[index].SSCCWithoutChecksum);
-    let ssccWithoutLeading = +this.products[index].SSCCWithoutChecksum.slice(leadingZeros);
-    ssccWithoutLeading++;
+
+    // Handle using bigint as the number is too large for normal numbers
+    let ssccWithoutLeading = BigInt(this.products[index].SSCCWithoutChecksum.slice(leadingZeros));
+    ssccWithoutLeading += BigInt(1);
     const dupedProduct = this.products.find(product => product.SSCCWithoutChecksum == `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`);
     if (dupedProduct)
       alert(`Et produkt med samme SSCC eksisterer allerede: EAN: ${dupedProduct.EAN} | SSCC: ${dupedProduct.SSCCWithoutChecksum} | Titel: ${dupedProduct.title.replaceAll('\\n', ' ')}`);
