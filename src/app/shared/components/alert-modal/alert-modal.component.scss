@@ -1,0 +1,18 @@
+.alert-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+
+    .content {
+        .body {
+            margin: 0;
+        }
+    }
+
+    .btns {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 1em;
+    }
+}

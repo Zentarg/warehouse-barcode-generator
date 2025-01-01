@@ -3,12 +3,12 @@ import { Product, ProductKeyToLabel } from '../../../../core/models/product';
 import { ModalService } from '../../../../core/services/modal.service';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { AlertModalComponent } from '../../../../shared/components/alert-modal/alert-modal.component';
 
 @Component({
   selector: 'app-edit-product-modal',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule],
   templateUrl: './edit-product-modal.component.html',
   styleUrl: './edit-product-modal.component.scss'
 })
@@ -19,6 +19,8 @@ export class EditProductModalComponent implements OnInit{
   @Input() public confirmBtn: string = "Gem";
   @Input() public cancelBtn: string = "Annuller";
   @Input() public callbackFn: any = () => {};
+  @Input() public validateFn: any = () => {};
+  @Input() public isAdding: boolean = false;
   callbacking: boolean = false;
 
   tempProduct!: Product;
@@ -32,6 +34,22 @@ export class EditProductModalComponent implements OnInit{
   async save() {
     this.callbacking = true;
     try {
+      let validateResult = await this.validateFn(this.tempProduct);
+      if (validateResult && !validateResult.isValid) {
+        let alert = await this.modalService.open(AlertModalComponent, {})
+        alert.contentInstance.header = "Validerings-fejl";
+        alert.contentInstance.body = validateResult.error;
+        this.callbacking = false;
+        return;
+      }
+      
+      if (this.isAdding) {
+        await this.callbackFn(this.tempProduct);
+        this.modalService.closeActiveModal();
+        this.callbacking = false;
+        return;
+      }
+
 
       let modal = await this.modalService.open(ConfirmModalComponent, {});
       modal.contentInstance.header = `Bekræft af produkt ændring (EAN: ${this.product.EAN})`;
@@ -80,8 +98,12 @@ export class EditProductModalComponent implements OnInit{
       this.modalService.closeActiveModal();
   }
 
-  get anyChanges() {
-    return JSON.stringify(this.product) !== JSON.stringify(this.tempProduct);
+  get canSave() {
+
+    const anyChanges = JSON.stringify(this.product) !== JSON.stringify(this.tempProduct);
+    const allRequiredFilled = !!this.tempProduct.EAN && !!this.tempProduct.SSCCWithoutChecksum;
+
+    return allRequiredFilled && anyChanges;
   }
 
   ProductKeyToLabel(key: keyof Product): string {

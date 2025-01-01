@@ -9,7 +9,7 @@
                 <input type="text" id="company" [(ngModel)]="tempProduct.company">
             </div>
             <div class="ean">
-                <label for="ean" [class.changed]="product.EAN != tempProduct.EAN">{{ProductKeyToLabel('EAN')}}</label>
+                <label for="ean" [class.required]="!tempProduct.EAN" [class.changed]="product.EAN != tempProduct.EAN">{{ProductKeyToLabel('EAN')}}</label>
                 <input type="text" id="ean" [(ngModel)]="tempProduct.EAN">
             </div>
         </div>
@@ -30,7 +30,7 @@
         </div>
         <div class="input-group">
             <div class="sscc">
-                <label for="sscc" [class.changed]="product.SSCCWithoutChecksum != tempProduct.SSCCWithoutChecksum">{{ProductKeyToLabel('SSCCWithoutChecksum')}} (Uden validerings ciffer)</label>
+                <label for="sscc" [class.required]="!tempProduct.SSCCWithoutChecksum" [class.changed]="product.SSCCWithoutChecksum != tempProduct.SSCCWithoutChecksum">{{ProductKeyToLabel('SSCCWithoutChecksum')}} (Uden validerings ciffer)</label>
                 <input type="text" id="sscc" [(ngModel)]="tempProduct.SSCCWithoutChecksum">
             </div>
             <div class="kolli">
@@ -51,8 +51,8 @@
     </div>
 
     <div class="buttons">
-        <button (click)="save()" [disabled]="!anyChanges">Gem</button>
-        <button class="red" (click)="cancel()">Annuller</button>
+        <button (click)="save()" [disabled]="!canSave">{{confirmBtn}}</button>
+        <button class="red" [disabled]="callbacking" (click)="cancel()">{{cancelBtn}}</button>
     </div>
 
 </aside>

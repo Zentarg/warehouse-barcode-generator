@@ -12,6 +12,8 @@ import { SettingsService } from '../../core/services/settings.service';
 import { ToastSettings, ToastType } from '../../core/models/toast-settings';
 import { ToastService } from '../../core/services/toast.service';
 import { PrintedProductsService } from '../../core/services/printed-products.service';
+import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
+import { ModalService } from '../../core/services/modal.service';
 
 @Component({
   selector: 'app-barcodes',
@@ -33,7 +35,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   _automaticPrintCountdown: number = 0;
   automaticPrintCountdownInterval: any;
 
-  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService) {
+  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService, private modalService: ModalService) {
   }
   ngOnDestroy(): void {
     clearInterval(this.automaticPrintCountdownInterval);
@@ -61,13 +63,14 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     });
   }
 
-  handlePrintFailed(event: any, error: any) {
+  async handlePrintFailed(event: any, error: any) {
     console.log(`Print failed: ${error.errorType}`);
     this.toastService.showToast({
       text: `Print mislykkedes: ${error.errorType}<br>EAN: ${error.options.EAN}<br>SSCC: ${error.options.SSCC + this.barcodeHelperService.calculateGS1128CheckDigit(error.options.SSCC)}`,
       showCloseButton: true,
       type: ToastType.error,
     });
+
     this.isPrinting = false;
     this.cdr.detectChanges();
   }
@@ -196,7 +199,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     }
   }
 
-  afterPrint(): void {
+  async afterPrint(): Promise<void> {
     const index = this.products.findIndex(product => product.EAN === this.selectedProduct?.EAN);
     if (index == -1)
       return;
@@ -210,10 +213,11 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     let ssccWithoutLeading = BigInt(this.products[index].SSCCWithoutChecksum.slice(leadingZeros));
     ssccWithoutLeading += BigInt(1);
     const dupedProduct = this.products.find(product => product.SSCCWithoutChecksum == `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`);
-    if (dupedProduct)
-      alert(`Et produkt med samme SSCC eksisterer allerede: EAN: ${dupedProduct.EAN} | SSCC: ${dupedProduct.SSCCWithoutChecksum} | Titel: ${dupedProduct.title.replaceAll('\\n', ' ')}`);
-
-
+    if (dupedProduct) {
+      let alert = await this.modalService.open(AlertModalComponent);
+      alert.contentInstance.header = "Et produkt med samme SSCC eksisteret allerede";
+      alert.contentInstance.body = `EAN: ${dupedProduct.EAN}<br>SSCC: ${dupedProduct.SSCCWithoutChecksum}<br>${dupedProduct.title.replaceAll('\\n', '<br>')}`;
+    }
 
     //Add to history before saving the incremented SSCC
     const copiedProduct = JSON.parse(JSON.stringify(this.products[index]));
@@ -293,7 +297,9 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   }
 
   get products(): Product[] {
-    return this.productsService.products.filter(product => this.kolliBarcode == '' || this.kolliBarcode.includes(product.EAN));
+    if (this.kolliBarcode == '')
+      return this.productsService.products;
+    return this.productsService.products.filter(product => this.ean.includes(product.EAN));
   }
 
   get automaticPrint(): boolean {

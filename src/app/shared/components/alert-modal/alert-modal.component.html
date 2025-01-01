@@ -1,0 +1,13 @@
+
+
+<div class="alert-modal">
+    <div class="content">
+        <h3 class="header" *ngIf="header" [innerHTML]="header"></h3>
+        <p class="body" *ngIf="body" [innerHTML]="body"></p>
+    </div>
+    <div class="btns">
+        <button class="btn" (click)="close()">
+                {{confirmBtn}}
+        </button>
+    </div>
+</div>

@@ -9,6 +9,8 @@ import { ModalService } from '../../core/services/modal.service';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 import { EditProductModalComponent } from './components/edit-product-modal/edit-product-modal.component';
 import { ModalSize } from '../../core/models/modal-settings';
+import { ToastService } from '../../core/services/toast.service';
+import { ToastType } from '../../core/models/toast-settings';
 
 @Component({
   selector: 'app-data',
@@ -20,7 +22,7 @@ import { ModalSize } from '../../core/models/modal-settings';
 export class DataComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private productsService: ProductsService, private csvHandlerService: CsvHandlerService, public barcodeHelperService: BarcodeHelperService, private modalService: ModalService) {
+  constructor(private productsService: ProductsService, private csvHandlerService: CsvHandlerService, public barcodeHelperService: BarcodeHelperService, private modalService: ModalService, private toastService: ToastService) {
   }
 
   eanSearch: string = '';
@@ -70,12 +72,52 @@ export class DataComponent {
     let modal = await this.modalService.open(EditProductModalComponent, {
       size: ModalSize.Large
     });
-    modal.contentInstance.header = `Rediger produkt (EAN ${product.EAN})`;
-    modal.contentInstance.confirmBtn = "Rediger";
+    modal.contentInstance.header = `Rediger produkt (EAN: ${product.EAN})`;
+    modal.contentInstance.confirmBtn = "Gem";
     modal.contentInstance.product = product;
+    modal.contentInstance.validateFn = this.validateProduct.bind(this);
     modal.contentInstance.callbackFn = async (editedProduct: Product) => {
       this.productsService.updateProduct(product.EAN, editedProduct);
     };
   };
+
+  async addProduct(): Promise<void> {
+    let modal = await this.modalService.open(EditProductModalComponent, {
+      size: ModalSize.Large
+    });
+    modal.contentInstance.header = "Tilføj nyt produkt";
+    modal.contentInstance.confirmBtn = "Tilføj";
+    modal.contentInstance.product = {
+      EAN: "",
+      title: "",
+      company: "",
+      SSCCWithoutChecksum: "",
+      productName: "",
+      type: ""
+    } as Product;
+    modal.contentInstance.isAdding = true;
+    modal.contentInstance.validateFn = this.validateProduct.bind(this);
+    modal.contentInstance.callbackFn = async (product: Product) => {
+      this.toastService.showToast({
+        text: `Produkt tilføjet<br>EAN: ${product.EAN}<br>SSCC: ${product.SSCCWithoutChecksum + this.barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}`,
+        type: ToastType.success,
+        showCloseButton: true,
+        duration: 5000,
+      });
+      this.productsService.addProducts([product]);
+    };
+  };
+
+  validateProduct(product: Product): { isValid: boolean, error?: string } {
+    if (this.productsService.products.find(p => p.EAN === product.EAN)) {
+      return { isValid: false, error: "Produkt med samme EAN findes allerede" };
+    }
+
+    if (this.productsService.products.find(p => p.SSCCWithoutChecksum === product.SSCCWithoutChecksum)) {
+      return { isValid: false, error: "Produkt med samme SSCC findes allerede" };
+    }
+
+    return { isValid: true };
+  }
   
 }

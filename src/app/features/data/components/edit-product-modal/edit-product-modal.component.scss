@@ -17,12 +17,23 @@ aside {
             min-height: fit-content;
         }
 
-        label.changed {
-            &:after {
-                content: '(ændret)';
-                color: $accent-red;
-                padding-left: .5rem;
-                font-size: .85em;
+        label {
+            &.changed {
+                &:after {
+                    content: '(ændret)';
+                    color: $accent-red;
+                    padding-left: .5rem;
+                    font-size: .85em;
+                }
+            }
+
+            &.required {
+                &:after {
+                    content: '(krævet)';
+                    color: $accent-red;
+                    padding-left: .5rem;
+                    font-size: .85em;
+                }
             }
         }
     }

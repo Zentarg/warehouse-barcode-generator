@@ -98,17 +98,18 @@ button {
         background-color: $primary-dark-blue-hover;
     }
 
-    &:disabled {
-        background-color: $secondary-grey;
-        cursor: not-allowed;
-    }
-
     &.red {
         background-color: $accent-red;
         &:hover {
             background-color: $accent-red-hover;
         }
     }
+    
+    &:disabled {
+        background-color: $secondary-grey;
+        cursor: not-allowed;
+    }
+
 
     &:focus-visible {
         outline-offset: 3px;
@@ -154,6 +155,7 @@ textarea {
 label[for] {
     cursor: pointer;
     user-select: none;
+    position: relative;
 }
 
 input[type=checkbox] {
