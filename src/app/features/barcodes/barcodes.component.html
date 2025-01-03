@@ -25,16 +25,34 @@
             <input type="number" id="kolli" [(ngModel)]="kolli">
         </div>
         <div class="print-controls">
-            <div class="automatic-print" *ngIf="canAutomaticPrint">
-                <label for="automatic-print" class="checkbox-label">
-                    <span>
-                        Automatisk Print
-                    </span>
-                    <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
-                </label>
-                <span *ngIf="isPrinting">Printer om {{automaticPrintCountdown}}s</span>
+            <div class="packing-slip">
+                <div>
+                    <label for="add-to-packing-slip" class="checkbox-label">
+                        <span>
+                            Tilføj til følgeseddel ved print
+                        </span>
+                        <input type="checkbox" id="add-to-packing-slip" [(ngModel)]="addToPackingSlipOnPrint">
+                    </label>
+                </div>
+                <div *ngIf="addToPackingSlipOnPrint">
+                    <label for="packing-slip">Vælg følgeseddel</label>
+                    <select id="products" [(ngModel)]="selectedPackingSlip">
+                        <option *ngFor="let packingSlip of packingSlips" [ngValue]="packingSlip">{{packingSlip.orderNumber}}</option>
+                    </select>
+                </div>
             </div>
-            <button (click)="print()">Print</button>
+            <div class="automatic-print">
+                <div class="automatic-print-control" *ngIf="canAutomaticPrint">
+                    <label for="automatic-print" class="checkbox-label">
+                        <span>
+                            Automatisk Print
+                        </span>
+                        <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
+                    </label>
+                    <span *ngIf="isPrinting">Printer om {{automaticPrintCountdown}}s</span>
+                </div>
+                <button (click)="print()">Print</button>
+            </div>
         </div>
     </div>
     <div class="print-container">

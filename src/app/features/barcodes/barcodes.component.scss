@@ -18,15 +18,26 @@ main {
 
         .print-controls {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 1rem;
 
-            .automatic-print {
+            .packing-slip {
                 display: flex;
                 flex-direction: column;
-                label {
-                    margin: 0;
+                gap: .5rem;
+            }
+            .automatic-print {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+    
+                .automatic-print-control {
+                    display: flex;
+                    flex-direction: column;
+                    label {
+                        margin: 0;
+                    }
                 }
             }
         }

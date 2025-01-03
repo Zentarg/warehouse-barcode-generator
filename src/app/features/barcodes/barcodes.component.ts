@@ -14,6 +14,8 @@ import { ToastService } from '../../core/services/toast.service';
 import { PrintedProductsService } from '../../core/services/printed-products.service';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { ModalService } from '../../core/services/modal.service';
+import { PackingSlipsService } from '../../core/services/packing-slips.service';
+import { PackingSlip } from '../../core/models/packing-slip';
 
 @Component({
   selector: 'app-barcodes',
@@ -25,6 +27,7 @@ import { ModalService } from '../../core/services/modal.service';
 export class BarcodesComponent implements OnInit, OnDestroy {
   _kolliBarcode: string = '';
   _selectedProduct: Product | undefined;
+  _selectedPackingSlip: PackingSlip | undefined;
 
   ean: string = '';
   _batchNumber: string = '';
@@ -34,8 +37,9 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   _isPrinting: boolean = false;
   _automaticPrintCountdown: number = 0;
   automaticPrintCountdownInterval: any;
+  _addToPackingSlipOnPrint: boolean = false;
 
-  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService, private modalService: ModalService) {
+  constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService, private modalService: ModalService, private packingSlipsService: PackingSlipsService) {
   }
   ngOnDestroy(): void {
     clearInterval(this.automaticPrintCountdownInterval);
@@ -227,8 +231,17 @@ export class BarcodesComponent implements OnInit, OnDestroy {
       batchNumber: this._batchNumber,
       bestBefore: this._expirationDate,
       kolli: this._kolli,
-      packingSlipId: 0, // ToDo: Implement packing slip
+      packingSlipId: this.addToPackingSlipOnPrint ? this.selectedPackingSlip?.id : undefined, // ToDo: Implement packing slip
     };
+    
+    if (this.addToPackingSlipOnPrint && this.selectedPackingSlip) {
+      if (this.selectedPackingSlip?.printedProducts == undefined)
+        this.selectedPackingSlip!.printedProducts = [];
+      this.selectedPackingSlip?.printedProducts.push(printedProduct);
+  
+      this.packingSlipsService.updatePackingSlip(this.selectedPackingSlip!);
+    }
+
     this.printedProductsService.addPrintedProducts([printedProduct]);
 
     this.products[index].SSCCWithoutChecksum = `${'0'.repeat(leadingZeros)}${ssccWithoutLeading}`;
@@ -330,5 +343,25 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   get canAutomaticPrint(): boolean {
     return this.settingsService.settings.labelPrinter != undefined;
   }
+
+  get packingSlips(): PackingSlip[] {
+    return this.packingSlipsService.packingSlips.filter(packingSlip => !packingSlip.datePrinted);
+  }
+
+  get selectedPackingSlip(): PackingSlip | undefined {
+    return this._selectedPackingSlip;
+  };
+
+  set selectedPackingSlip(packingSlip: PackingSlip | undefined) {
+    this._selectedPackingSlip = packingSlip;
+  };
+
+  get addToPackingSlipOnPrint(): boolean {
+    return this._addToPackingSlipOnPrint;
+  };
+
+  set addToPackingSlipOnPrint(packingSlip: boolean) {
+    this._addToPackingSlipOnPrint = packingSlip;
+  };
 
 }
