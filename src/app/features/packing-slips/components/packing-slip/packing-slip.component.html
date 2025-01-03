@@ -97,7 +97,7 @@
                         <div class="input-group">
                             <div class="sscc">
                                 <label for="sscc">SSCC</label>
-                                <input type="text" id="sscc" disabled [value]="printedProduct.product.SSCCWithoutChecksum">
+                                <input type="text" id="sscc" disabled [value]="printedProduct.product.SSCCWithoutChecksum + barcodeHelperService.calculateGS1128CheckDigit(printedProduct.product.SSCCWithoutChecksum)">
                             </div>
                             <div class="product-name">
                                 <label for="product-name">Produkt navn</label>

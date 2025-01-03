@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PackingSlip } from '../models/packing-slip';
+import { runInThisContext } from 'vm';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,7 @@ export class PackingSlipsService {
       this._packingSlips = JSON.parse(packingSlips);
     }
     let maxId = this._packingSlips ? Math.max(...this._packingSlips.map(p => p.id)) : 0;
+    this.nextId = maxId + 1;
   }
 
 

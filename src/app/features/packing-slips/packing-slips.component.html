@@ -35,9 +35,9 @@
                 <td>{{packingSlip.orderNumber}}</td>
                 <td>{{packingSlip.title}}</td>
                 <td>{{packingSlip.address}}</td>
-                <td>{{packingSlip.dateCreated | date}}</td>
-                <td>{{packingSlip.datePrinted}}</td>
-                <td>{{packingSlip.deliveryDate}}</td>
+                <td>{{packingSlip.dateCreated | date : 'dd-MM-yyyy'}}</td>
+                <td>{{packingSlip.datePrinted | date : 'dd-MM-yyyy'}}</td>
+                <td>{{packingSlip.deliveryDate | date : 'dd-MM-yyyy'}}</td>
                 <td class="hide-print">
                     <div class="actions">
                         <button class="icon" [routerLink]="'/packingslips/'+packingSlip.id"><i class="bi bi-pencil"></i></button>

@@ -7,6 +7,7 @@ import { PackingSlip } from '../../core/models/packing-slip';
 import { ModalService } from '../../core/services/modal.service';
 import { AddPackingSlipModal } from './components/add-packing-slip-modal/add-packing-slip-modal.component';
 import { ModalSize } from '../../core/models/modal-settings';
+import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-packing-slips',
@@ -39,7 +40,15 @@ export class PackingSlipsComponent {
     }
   }
 
-  removePackingSlip(packingSlip: PackingSlip) {
+  async removePackingSlip(packingSlip: PackingSlip) {
+
+    let modal = await this.modalService.open(ConfirmModalComponent, {});
+    modal.contentInstance.header = "Er du sikker på at du vil slette denne følgeseddel?";
+    modal.contentInstance.body = `${packingSlip.title}<br>${packingSlip.address}<br>Ordre nr.: ${packingSlip.orderNumber}<br>Leveringsdato: ${packingSlip.deliveryDate || 'Ikke leveret'}`;
+    modal.contentInstance.confirmBtn = "Slet";
+    modal.contentInstance.callbackFn = async () => {
+      this.packingSlipsService.removePackingSlips([packingSlip]);
+    };
 
   }
 

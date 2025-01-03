@@ -237,9 +237,12 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     };
     
     if (this.addToPackingSlipOnPrint && this.selectedPackingSlip) {
-      if (this.selectedPackingSlip?.printedProducts == undefined)
-        this.selectedPackingSlip!.printedProducts = [];
-      this.selectedPackingSlip?.printedProducts.push(printedProduct);
+      if (this.selectedPackingSlip.printedProducts == undefined)
+        this.selectedPackingSlip.printedProducts = [];
+      this.selectedPackingSlip.printedProducts.push(printedProduct);
+      if (this.selectedPackingSlip.deliveredPalletCount == undefined)
+        this.selectedPackingSlip.deliveredPalletCount = 0;
+      this.selectedPackingSlip.deliveredPalletCount++;
   
       this.packingSlipsService.updatePackingSlip(this.selectedPackingSlip!);
     }
@@ -367,6 +370,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   };
 
   set selectedPackingSlip(packingSlip: PackingSlip | undefined) {
+    console.log(packingSlip);
     this._selectedPackingSlip = packingSlip;
   };
 
