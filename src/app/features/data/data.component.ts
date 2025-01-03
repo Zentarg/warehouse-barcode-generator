@@ -85,8 +85,8 @@ export class DataComponent {
     let modal = await this.modalService.open(EditProductModalComponent, {
       size: ModalSize.Large
     });
-    modal.contentInstance.header = "Tilføj nyt produkt";
-    modal.contentInstance.confirmBtn = "Tilføj";
+    modal.contentInstance.header = "Opret nyt produkt";
+    modal.contentInstance.confirmBtn = "Opret";
     modal.contentInstance.product = {
       EAN: "",
       title: "",
@@ -99,7 +99,7 @@ export class DataComponent {
     modal.contentInstance.validateFn = this.validateProduct.bind(this);
     modal.contentInstance.callbackFn = async (product: Product) => {
       this.toastService.showToast({
-        text: `Produkt tilføjet<br>EAN: ${product.EAN}<br>SSCC: ${product.SSCCWithoutChecksum + this.barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}`,
+        text: `Produkt oprettet<br>EAN: ${product.EAN}<br>SSCC: ${product.SSCCWithoutChecksum + this.barcodeHelperService.calculateGS1128CheckDigit(product.SSCCWithoutChecksum)}`,
         type: ToastType.success,
         showCloseButton: true,
         duration: 5000,

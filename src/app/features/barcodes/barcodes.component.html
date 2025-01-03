@@ -34,11 +34,14 @@
                         <input type="checkbox" id="add-to-packing-slip" [(ngModel)]="addToPackingSlipOnPrint">
                     </label>
                 </div>
-                <div *ngIf="addToPackingSlipOnPrint">
-                    <label for="packing-slip">Vælg følgeseddel</label>
-                    <select id="products" [(ngModel)]="selectedPackingSlip">
-                        <option *ngFor="let packingSlip of packingSlips" [ngValue]="packingSlip">{{packingSlip.orderNumber}}</option>
-                    </select>
+                <div *ngIf="addToPackingSlipOnPrint" class="select-packing-slip-container">
+                    <div class="select-packing-slip">
+                        <label for="packing-slip">Vælg følgeseddel</label>
+                        <select id="products" [(ngModel)]="selectedPackingSlip">
+                            <option *ngFor="let packingSlip of packingSlips" [ngValue]="packingSlip">{{packingSlip.orderNumber}}</option>
+                        </select>
+                    </div>
+                    <button (click)="addPackingSlip()">Opret Ny</button>
                 </div>
             </div>
             <div class="automatic-print">

@@ -16,6 +16,8 @@ import { AlertModalComponent } from '../../shared/components/alert-modal/alert-m
 import { ModalService } from '../../core/services/modal.service';
 import { PackingSlipsService } from '../../core/services/packing-slips.service';
 import { PackingSlip } from '../../core/models/packing-slip';
+import { AddPackingSlipModal } from '../packing-slips/components/add-packing-slip-modal/add-packing-slip-modal.component';
+import { ModalSize } from '../../core/models/modal-settings';
 
 @Component({
   selector: 'app-barcodes',
@@ -250,6 +252,18 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     
     this.isPrinting = false;
     this.cdr.detectChanges();
+  }
+
+  async addPackingSlip() {
+    let modal = await this.modalService.open(AddPackingSlipModal, {
+      size: ModalSize.Large,
+    })
+    modal.contentInstance.packingSlip = {} as PackingSlip;
+    modal.contentInstance.callbackFn = (packingSlip: PackingSlip) => {
+      this.packingSlipsService.addPackingSlips([packingSlip]);
+      this.selectedPackingSlip = packingSlip;
+    }
+
   }
 
   get selectedProduct(): Product | undefined {

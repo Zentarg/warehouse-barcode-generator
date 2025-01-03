@@ -25,6 +25,17 @@ main {
                 display: flex;
                 flex-direction: column;
                 gap: .5rem;
+
+                .select-packing-slip-container {
+                    display: flex;
+                    flex-direction: row;
+                    gap: .5rem;
+                    align-items: end;
+
+                    .select-packing-slip {
+                        flex-grow: 1;
+                    }
+                }
             }
             .automatic-print {
                 display: flex;

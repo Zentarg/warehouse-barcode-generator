@@ -14,7 +14,7 @@ import { PackingSlip, PackingSlipKeyToLabel } from '../../../../core/models/pack
 export class AddPackingSlipModal implements OnInit{
 
   @Input() packingSlip!: PackingSlip;
-  @Input() header: string = "Tilføj Følgeseddel";
+  @Input() header: string = "Opret Følgeseddel";
   @Input() public confirmBtn: string = "Opret";
   @Input() public cancelBtn: string = "Annuller";
   @Input() public callbackFn: any = () => {};
