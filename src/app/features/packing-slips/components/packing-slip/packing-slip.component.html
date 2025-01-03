@@ -1,5 +1,13 @@
 <main *ngIf="packingSlip">
     <div class="print-data hide-print">
+        <div *ngIf="packingSlip.datePrinted != undefined && !canEdit" class="blocking-overlay">
+            <div class="content">
+                <span>
+                    <span>Følgesedlen er allerede printet. Vil du fortsætte?</span>
+                </span>
+                <button (click)="canEdit = true">Fortsæt</button>
+            </div>
+        </div>
         <div class="buttons">
             <button (click)="print()" >Print</button>
         </div>

@@ -24,6 +24,7 @@ export class PackingSlipComponent implements OnInit {
   idMinLength: number = 5;
 
   ssccSearch: string = '';
+  _canEdit: boolean = false;
 
   _selectedPrintedProduct: PrintedProduct | undefined = undefined;
 
@@ -234,6 +235,17 @@ export class PackingSlipComponent implements OnInit {
     });
 
     return Array.from(combinedProductsMap.values());
+  }
+
+  get canEdit(): boolean {
+    if (this.packingSlip.datePrinted == undefined)
+      return true;
+    else 
+      return this._canEdit;
+  }
+
+  set canEdit(value: boolean) {
+    this._canEdit = value;
   }
 
 
