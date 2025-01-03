@@ -5,6 +5,8 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    z-index: 100;
+    background: $primary-white;
     ul {
         list-style-type: none;
         padding: 1em;

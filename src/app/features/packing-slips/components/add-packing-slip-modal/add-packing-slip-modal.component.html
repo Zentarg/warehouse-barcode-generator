@@ -1,0 +1,26 @@
+<aside>
+    <h3 [innerHTML]="header"></h3>
+
+    <div class="data">
+        <div class="input-group">
+            <div class="order-number">
+                <label for="orderNumber">{{PackingSlipKeyToLabel('orderNumber')}}</label>
+                <input type="text" id="orderNumber" [(ngModel)]="tempPackingSlip.orderNumber">
+            </div>
+            <div class="title">
+                <label for="title">{{PackingSlipKeyToLabel('title')}}</label>
+                <input type="text" id="title" [(ngModel)]="tempPackingSlip.title">
+            </div>
+        </div>
+        <div class="address">
+            <label for="address">{{PackingSlipKeyToLabel('address')}}</label>
+            <input type="text" id="address" [(ngModel)]="tempPackingSlip.address">
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button (click)="save()">{{confirmBtn}}</button>
+        <button class="red" [disabled]="callbacking" (click)="cancel()">{{cancelBtn}}</button>
+    </div>
+
+</aside>

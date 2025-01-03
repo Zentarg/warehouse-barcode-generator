@@ -58,7 +58,7 @@ export class AppComponent implements OnInit{
         case '/data':
         case '/settings':
         case '/packing-slip':
-          this.setPageStyle('auto', 'auto');
+          this.setPageStyle('a4 portrait', '.5cm');
           break;
       }
     });

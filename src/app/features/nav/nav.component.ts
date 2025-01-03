@@ -25,6 +25,11 @@ export class NavComponent {
       icon: 'bi bi-file-earmark-spreadsheet'
     },
     {
+      label: 'Følgesedler',
+      route: '/packingslips',
+      icon: 'bi bi-box-seam'
+    },
+    {
       label: 'Historik',
       route: '/history',
       icon: 'bi bi-clock-history'

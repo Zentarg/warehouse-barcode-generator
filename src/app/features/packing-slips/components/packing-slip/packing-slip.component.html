@@ -1,0 +1,224 @@
+<main *ngIf="packingSlip">
+    <div class="print-data hide-print">
+        <div class="buttons">
+            <button (click)="print()" >Print</button>
+        </div>
+        <div class="input-group">
+            <div class="title">
+                <label for="title">Titel</label>
+                <input type="text" id="title" [(ngModel)]="title">
+            </div>
+            <div class="address">
+                <label for="address">Adresse</label>
+                <input type="text" id="address" [(ngModel)]="address">
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="order-number">
+                <label for="order-number">Ordrer nr.</label>
+                <input type="text" id="order-number" [(ngModel)]="orderNumber">
+            </div>
+            <div class="delivery-date">
+                <label for="delivery-date">Leveringsdato</label>
+                <input type="date" id="delivery-date" [(ngModel)]="deliveryDate">
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="delivered-pallets">
+                <label for="delivered-pallets">EUR Paller</label>
+                <input type="number" id="delivered-pallets" min="0" [(ngModel)]="deliveredPalletCount">
+            </div>
+            <div class="delivered-quarter-pallets">
+                <label for="delivered-quarter-pallets">1/4 Paller</label>
+                <input type="number" id="delivered-quarter-pallets" min="0" [(ngModel)]="deliveredQuarterPalletCount">
+            </div>
+        </div>
+        <div class="section">
+            <span class="section-title">Tilføj Printede Labels</span>
+            <div class="printed-products-controls">
+                <div class="sscc-search">
+                    <label for="sscc-search">Søg SSCC</label>
+                    <input type="text" id="sscc-search" [(ngModel)]="ssccSearch">
+                </div>
+                <div class="select-printed-products">
+                    <label for="select-printed-products">Printede labels (SSCC)</label>
+                    <select id="select-printed-products" [(ngModel)]="selectedPrintedProduct">
+                        <option *ngFor="let printedProduct of availablePrintedProducts" [ngValue]="printedProduct">{{printedProduct.product.SSCCWithoutChecksum + barcodeHelperService.calculateGS1128CheckDigit(printedProduct.product.SSCCWithoutChecksum)}}</option>
+                    </select>
+                </div>
+                <ng-container *ngIf="selectedPrintedProduct">
+                    <div class="input-group">
+                        <div class="printed-product-ean">
+                            <label for="printed-product-ean">EAN</label>
+                            <input type="text" id="printed-product-ean" disabled [value]="selectedPrintedProduct.product.EAN">
+                        </div>
+                        <div class="printed-product-number">
+                            <label for="printed-product-number">Produkt nr.</label>
+                            <input type="text" id="printed-product-number" disabled [value]="selectedPrintedProduct.product.productNumber">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="printed-product-name">
+                            <label for="printed-product-name">Produkt navn</label>
+                            <input type="text" id="printed-product-name" disabled [value]="selectedPrintedProduct.product.productName">
+                        </div>
+                        <div class="printed-product-kolli">
+                            <label for="printed-product-kolli">Kolli</label>
+                            <input type="string" id="printed-product-kolli" disabled [value]="selectedPrintedProduct.kolli">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="printed-product-best-before">
+                            <label for="printed-product-best-before">Bedst før</label>
+                            <input type="string" id="printed-product-best-before" disabled [value]="barcodeHelperService.addSeperatorsToDate(selectedPrintedProduct.bestBefore)">
+                        </div>
+                        <div class="printed-product-batch-number">
+                            <label for="printed-product-batch-number">Batch nr.</label>
+                            <input type="string" id="printed-product-batch-number" disabled [value]="selectedPrintedProduct.batchNumber">
+                        </div>
+                    </div>
+                </ng-container>
+                <button [disabled]="!selectedPrintedProduct" (click)="addSelectedPrintedProduct()">Tilføj</button>
+            </div>
+        </div>
+        <div class="printed-products">
+            <p>Printede Labels</p>
+            <ul class="printed-products-list">
+                <li class="printed-product" *ngFor="let printedProduct of packingSlip.printedProducts">
+                    <div class="printed-product-data">
+                        <div class="input-group">
+                            <div class="sscc">
+                                <label for="sscc">SSCC</label>
+                                <input type="text" id="sscc" disabled [value]="printedProduct.product.SSCCWithoutChecksum">
+                            </div>
+                            <div class="product-name">
+                                <label for="product-name">Produkt navn</label>
+                                <input type="text" id="product-name" disabled [value]="printedProduct.product.productName">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="best-before">
+                                <label for="best-before">Bedst før</label>
+                                <input type="date" id="best-before" disabled [value]="printedProduct.bestBefore">
+                            </div>
+                            <div class="kolli">
+                                <label for="kolli">Kolli</label>
+                                <input type="number" id="kolli" disabled [value]="printedProduct.kolli">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="icon red" (click)="removePrintedProduct(printedProduct)"><i class="bi bi-trash3"></i></button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="print-container">
+        <div class="print">
+            <table>
+                <thead>
+                    <tr>
+                        <td colspan="7" class="header">
+                            <div class="header-div">
+                                <div class="left">
+                                    <div class="title">
+                                        <h2>{{title}}</h2>
+                                        <h2>{{address}}</h2>
+                                    </div>
+                                    <div class="date-ordernumber">
+                                        <div>
+                                            <span>Dato: </span>
+                                            <span>{{deliveryDate | date : 'dd-MM-yyyy'}}</span>
+                                        </div>
+                                        <div>
+                                            <span>Odre nr.:</span>
+                                            <span>{{orderNumber}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="packing-slip-id">
+                                    <span>FØLGESEDDEL</span>
+                                    <span>{{prefixedId}}</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">Bedst før</th>
+                        <th width="12%">Vare nr</th>
+                        <th width="30%">Navn</th>
+                        <th width="10%">Paller</th>
+                        <th width="10%">Kolli</th>
+                        <th width="8%">Antal pr. kolli</th>
+                        <th width="10%">Art</th>
+                    </tr>
+                </thead>
+                <tbody class="main-table-body">
+                    <tr *ngFor="let combinedPrintedProduct of combinedPrintedProducts">
+                        <td>{{barcodeHelperService.addSeperatorsToDate(combinedPrintedProduct.printedProduct.bestBefore)}}</td>
+                        <td>{{combinedPrintedProduct.printedProduct.product.productNumber}}</td>
+                        <td>{{combinedPrintedProduct.printedProduct.product.productName}}</td>
+                        <td>{{combinedPrintedProduct.quantity}}</td>
+                        <td>{{combinedPrintedProduct.printedProduct.kolli}}</td>
+                        <td>{{combinedPrintedProduct.printedProduct.product.amountPerKolli}}</td>
+                        <td>{{combinedPrintedProduct.printedProduct.product.type}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <div class="footer-div">
+                                <div class="footer">
+
+                                    <div class="delivery-date">
+                                        <span>LEVERINGSDATO:</span>
+                                        <span>{{deliveryDate | date : 'dd-MM-yyyy'}}</span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="signature">
+                                            <span>KVITTERING FOR MODTAGELSE:</span>
+                                        </div>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Leveret</th>
+                                                    <th>Retur</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1/4 Paller</td>
+                                                    <td class="text-center">{{deliveredQuarterPalletCount}}</td>
+                                                    <td class="text-center"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1/2 Paller</td>
+                                                    <td class="text-center"></td>
+                                                    <td class="text-center"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>EUR</td>
+                                                    <td class="text-center">{{deliveredPalletCount}}</td>
+                                                    <td class="text-center"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="contact">
+                                        <span class="address">Sunny Juice ApS - Lillevej 3 - 5592 Ejby</span>
+                                        <span>Tlf.: 64 42 17 05 - Fax 64 42 11 82</span>
+                                        <span>Mail: Charlotte&#64;sunnyjuice.dk</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    
+</main>

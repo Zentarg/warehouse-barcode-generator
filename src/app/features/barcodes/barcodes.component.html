@@ -10,7 +10,7 @@
                 <option *ngFor="let product of products" [ngValue]="product">{{product.title}}</option>
             </select>
         </div>
-        <div class="batch-and-best-before">
+        <div class="input-group">
             <div class="batch">
                 <label for="batch">Batch-nr.</label>
                 <input type="text" id="batch" [(ngModel)]="batchNumber">

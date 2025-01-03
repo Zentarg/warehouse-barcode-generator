@@ -20,7 +20,8 @@
                 <td>{{printedProduct.drivenDate ? (printedProduct.drivenDate | date : 'dd.MM.yy') : 'Ikke kørt'}}</td>
                 <td>{{getEANPrintCount(printedProduct.product.EAN)}}</td>
                 <td>
-                    <button >Åbn følgeseddel</button>
+                    <button *ngIf="printedProduct.packingSlipId != undefined" [routerLink]="'/packingslips/'+printedProduct.packingSlipId">Åbn følgeseddel</button>
+                    <span *ngIf="printedProduct.packingSlipId == undefined">Ikke tilsat</span>
                 </td>
             </tr>
         </tbody>

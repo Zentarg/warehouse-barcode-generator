@@ -1,0 +1,26 @@
+.controls {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+
+    .filters {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+}

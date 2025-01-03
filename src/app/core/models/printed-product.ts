@@ -7,5 +7,5 @@ export interface PrintedProduct {
     kolli: number;
     printDate: Date;
     drivenDate?: Date;
-    packingSlipId: number;
+    packingSlipId?: number;
 }

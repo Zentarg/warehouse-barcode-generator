@@ -18,7 +18,6 @@ export class PrintedProductsService {
 
   addPrintedProducts(printedProducts: PrintedProduct[]): void {
     printedProducts.forEach(printedProduct => {
-      console.log(printedProduct.product.SSCCWithoutChecksum, this._printedProducts.find(p => p.product.SSCCWithoutChecksum === printedProduct.product.SSCCWithoutChecksum)?.product?.SSCCWithoutChecksum)
       if (!this._printedProducts.find(p => p.product.SSCCWithoutChecksum === printedProduct.product.SSCCWithoutChecksum))
         this._printedProducts.push(printedProduct);
       else {
@@ -31,6 +30,14 @@ export class PrintedProductsService {
 
   removePrintedProducts(printedProducts: PrintedProduct[]): void {
     this._printedProducts = this._printedProducts.filter(p => !printedProducts.find(printedProduct => printedProduct.product.SSCCWithoutChecksum === p.product.SSCCWithoutChecksum));
+    this.savePrintedProducts();
+  }
+
+  updatePrintedProduct(printedProducts: PrintedProduct[]): void {
+    printedProducts.forEach(printedProduct => {
+      const index = this._printedProducts.findIndex(p => p.product.SSCCWithoutChecksum === printedProduct.product.SSCCWithoutChecksum);
+      this._printedProducts[index] = printedProduct;
+    });
     this.savePrintedProducts();
   }
 

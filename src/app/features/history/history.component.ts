@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { PrintedProductsService } from '../../core/services/printed-products.service';
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { BarcodeHelperService } from '../../core/services/barcode-helper.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [NgFor, DatePipe],
+  imports: [NgFor, DatePipe, RouterLink, NgIf],
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss'
 })
@@ -16,14 +17,6 @@ export class HistoryComponent {
   }
 
   constructor(private printedProductsService: PrintedProductsService, public barcodeHelperService: BarcodeHelperService) {}
-
-
-  // Will be used in packing slip
-  getIdenticalPrints(ean: string, kolli: number, bestBefore: string): number {
-    return this.printedProductsService.printedProducts.filter(printedProduct => {
-      return printedProduct.product.EAN === ean && printedProduct.kolli === kolli && printedProduct.bestBefore == bestBefore;
-    }).length;
-  };
 
   getEANPrintCount(ean: string) {
     return this.printedProductsService.printedProducts.filter(printedProduct => {

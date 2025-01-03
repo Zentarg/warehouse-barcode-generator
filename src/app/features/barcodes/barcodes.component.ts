@@ -56,7 +56,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     this.afterPrint();
     console.log(`Print started: EAN: ${options.EAN} | SSCC: ${options.SSCC}`);
     this.toastService.showToast({
-      text: `Printer:<br>EAN: ${options.EAN}<br>SSCC: ${options.SSCC + this.barcodeHelperService.calculateGS1128CheckDigit(options.SSCC)}`,
+      text: `Printer:<br>EAN: ${options.EAN}<br>SSCC: ${options.SSCC! + this.barcodeHelperService.calculateGS1128CheckDigit(options.SSCC!)}`,
       showCloseButton: false,
       type: ToastType.success,
       duration: 5000,
