@@ -34,7 +34,7 @@ export class EditProductModalComponent implements OnInit{
   async save() {
     this.callbacking = true;
     try {
-      let validateResult = await this.validateFn(this.tempProduct);
+      let validateResult = await this.validateFn(this.tempProduct, this.isAdding);
       if (validateResult && !validateResult.isValid) {
         let alert = await this.modalService.open(AlertModalComponent, {})
         alert.contentInstance.header = "Validerings-fejl";

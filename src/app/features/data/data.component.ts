@@ -108,16 +108,20 @@ export class DataComponent {
     };
   };
 
-  validateProduct(product: Product): { isValid: boolean, error?: string } {
-    if (this.productsService.products.find(p => p.EAN === product.EAN)) {
-      return { isValid: false, error: "Produkt med samme EAN findes allerede" };
+  validateProduct(product: Product, isNewProduct: boolean): { isValid: boolean, error?: string } {
+    if (isNewProduct) {
+      const existingEAN = this.productsService.products.find(p => p.EAN === product.EAN);
+      if (existingEAN) {
+        return { isValid: false, error: "Produkt med samme EAN findes allerede" };
+      }
     }
+    const existingSSCC = this.productsService.products.find(p => p.SSCCWithoutChecksum === product.SSCCWithoutChecksum);
 
-    if (this.productsService.products.find(p => p.SSCCWithoutChecksum === product.SSCCWithoutChecksum)) {
-      return { isValid: false, error: "Produkt med samme SSCC findes allerede" };
+    if (existingSSCC) {
+      return { isValid: false, error: `Produkt med samme SSCC findes allerede<br>EAN: ${existingSSCC.EAN}` };
     }
 
     return { isValid: true };
   }
-  
+
 }

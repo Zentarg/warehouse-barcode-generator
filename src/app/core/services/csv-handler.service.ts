@@ -29,9 +29,6 @@ export class CsvHandlerService {
             case 'productNumber':
             case 'amountPerKolli':
               const parsedInt = parseInt(value, 10);
-              if (isNaN(parsedInt))
-                obj[key] = 0;
-              else
                 obj[key] = parsedInt;
               break;
             case 'SSCCWithoutChecksum':
@@ -84,16 +81,33 @@ export class CsvHandlerService {
   }
 
   public exportCSV(products: Product[]) {
-    const headers = Object.keys(products[0]);
+    const tempProduct: Product = {
+      company: "",
+      EAN: "",
+      productNumber: 0,
+      productName: "",
+      title: "",
+      SSCCWithoutChecksum: "",
+      kolli: 0,
+      type: "",
+      amountPerKolli: 0,
+    }
+    const headers = Object.keys(tempProduct);
     const csv = products.map((product) => {
       return headers.map((header) => {
-        if (header === 'SSCCWithoutChecksum') {
-          return product[header as keyof Product] + this.barcodeHelperService.calculateGS1128CheckDigit(product[header as keyof Product] as string).toString();;
+        switch (header) {
+          case 'SSCCWithoutChecksum':
+            return product[header as keyof Product] + this.barcodeHelperService.calculateGS1128CheckDigit(product[header as keyof Product] as string).toString();
+          case 'productName':
+          case 'title':
+            if (!product[header as keyof Product])
+              return '';
+            return `"${product[header as keyof Product]}"`;
+          default:
+            if (!product[header as keyof Product])
+              return '';
+            return product[header as keyof Product];
         }
-        else if (header === 'title')
-          return `"${product[header as keyof Product]}"`;
-        else
-          return product[header as keyof Product] ;
       }).join(',')
     }).join('\n');
     const blob = new Blob([headers.join(',') + '\n' + csv], { type: 'text/csv' });

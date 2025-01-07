@@ -10,7 +10,7 @@
             </div>
             <div class="ean">
                 <label for="ean" [class.required]="!tempProduct.EAN" [class.changed]="product.EAN != tempProduct.EAN">{{ProductKeyToLabel('EAN')}}</label>
-                <input type="text" id="ean" [(ngModel)]="tempProduct.EAN">
+                <input type="text" [disabled]="!isAdding" id="ean" [(ngModel)]="tempProduct.EAN">
             </div>
         </div>
 
