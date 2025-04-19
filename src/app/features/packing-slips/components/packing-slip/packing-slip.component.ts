@@ -35,8 +35,9 @@ export class PackingSlipComponent implements OnInit {
   get availablePrintedProducts() {
     return this.printedProductsService.printedProducts.filter((printedProduct) => {
       const ssccWithChecksum = printedProduct.product.SSCCWithoutChecksum + this.barcodeHelperService.calculateGS1128CheckDigit(printedProduct.product.SSCCWithoutChecksum);
-      let inSearch = ssccWithChecksum.includes(this.ssccSearch);
-      if (!this.ssccSearch)
+      let ssccSearch = this.ssccSearch.replace(/^0+/, '');
+      let inSearch = ssccWithChecksum.includes(ssccSearch.trimStart());
+      if (!ssccSearch)
         inSearch = true;
       const alreadyAdded = this.packingSlipsService.packingSlips?.some(packingSlip => packingSlip.printedProducts?.some(p => p.product.SSCCWithoutChecksum === printedProduct.product.SSCCWithoutChecksum));
       return inSearch && !alreadyAdded;
