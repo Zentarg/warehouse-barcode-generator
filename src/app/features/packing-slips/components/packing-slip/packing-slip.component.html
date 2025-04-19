@@ -153,10 +153,11 @@
                     <tr>
                         <th width="10%">Bedst før</th>
                         <th width="12%">Vare nr</th>
-                        <th width="30%">Navn</th>
+                        <th width="22%">Navn</th>
                         <th width="10%">Paller</th>
                         <th width="10%">Kolli</th>
                         <th width="8%">Antal pr. kolli</th>
+                        <th width="8%">Antal ialt</th>
                         <th width="10%">Art</th>
                     </tr>
                 </thead>
@@ -168,12 +169,13 @@
                         <td>{{combinedPrintedProduct.quantity}}</td>
                         <td>{{combinedPrintedProduct.printedProduct.kolli}}</td>
                         <td>{{combinedPrintedProduct.printedProduct.product.amountPerKolli}}</td>
+                        <td>{{(combinedPrintedProduct.printedProduct.product.amountPerKolli || 0) * (combinedPrintedProduct.printedProduct.kolli || 0) * (combinedPrintedProduct.quantity || 0)}}</td>
                         <td>{{combinedPrintedProduct.printedProduct.product.type}}</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="footer-div">
                                 <div class="footer">
 
