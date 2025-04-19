@@ -164,7 +164,6 @@ export class BarcodesComponent implements OnInit, OnDestroy {
           }
         }
         window.electron.ipcRenderer.invoke('print-silent', printOptions);
-
         clearInterval(this.automaticPrintCountdownInterval);
       }
     }, 100);
@@ -209,9 +208,6 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     const index = this.products.findIndex(product => product.EAN === this.selectedProduct?.EAN);
     if (index == -1)
       return;
-    let sscc = this.products[index].SSCCWithoutChecksum;
-    if (this.products[index].SSCCWithoutChecksum.length == 18)
-      sscc = this.products[index].SSCCWithoutChecksum.slice(0, -1);
     const leadingZeros = this.barcodeHelperService.countLeadingZeros(this.products[index].SSCCWithoutChecksum);
 
     // Handle using bigint as the number is too large for normal numbers
@@ -254,6 +250,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
 
     
     this.isPrinting = false;
+    this.kolliBarcode = "";
     this.cdr.detectChanges();
   }
 
@@ -318,8 +315,12 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     this.ean = ean;
     this._batchNumber = batchNumber;
     this._expirationDate = expirationDate;
-    this._kolli = this.products[0].kolli;
-    this.selectedProduct = this.products[0];
+
+    let selectedProduct: Product | undefined = this.products[0];
+    if (value == '')
+      selectedProduct = undefined;
+    this.selectedProduct = selectedProduct;
+    this._kolli = this.selectedProduct?.kolli ?? 0;
 
     if (this.automaticPrint && value != '' && this._batchNumber != '')
       this.startAutomaticPrint();
