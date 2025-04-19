@@ -18,11 +18,12 @@ import { PackingSlipsService } from '../../core/services/packing-slips.service';
 import { PackingSlip } from '../../core/models/packing-slip';
 import { AddPackingSlipModal } from '../packing-slips/components/add-packing-slip-modal/add-packing-slip-modal.component';
 import { ModalSize } from '../../core/models/modal-settings';
+import { SpinnerComponent } from "../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-barcodes',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule],
+  imports: [NgFor, NgIf, FormsModule, SpinnerComponent],
   templateUrl: './barcodes.component.html',
   styleUrl: './barcodes.component.scss'
 })
@@ -174,7 +175,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   }
 
   print(): void {
-
+    this.isPrinting = true;
     if (window.electron) {
       const dpi = 96;
         const cmToPixels = (cm: number) => Math.round(cm * dpi / 2.54);
@@ -195,7 +196,12 @@ export class BarcodesComponent implements OnInit, OnDestroy {
             left: cmToPixels(0.5)
           }
         }
-        window.electron.ipcRenderer.invoke('print', printOptions);
+
+        let action = "print";
+        if (this.settingsService.settings.manualPrintSilent)
+          action = "print-silent";
+
+        window.electron.ipcRenderer.invoke(action, printOptions);
     } else {
       window.onafterprint = () => {
         this.afterPrint();

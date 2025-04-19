@@ -63,4 +63,12 @@ export class SettingsComponent implements OnInit {
     return this.settingsService.settings.automaticPrintTimer == this.automaticPrintTimer;
   }
 
+  set manualPrintSilent(value: boolean | undefined) {
+    this.settingsService.setSetting('manualPrintSilent', value);
+  }
+
+  get manualPrintSilent(): boolean | undefined {
+    return this.settingsService.settings.manualPrintSilent;
+  }
+
 }

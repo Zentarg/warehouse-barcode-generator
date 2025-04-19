@@ -22,5 +22,11 @@
             <button (click)="saveAutomaticPrintTimer()" [disabled]="isAutomaticPrintTimerSaved">{{isAutomaticPrintTimerSaved ? 'Gemt' : 'Gem'}}</button>
         </div>
     </div>
+    <div class="manual-print-silent">
+        <div class="input-group">
+            <input type="checkbox" id="manual-print-silent" [(ngModel)]="manualPrintSilent">
+            <label for="manual-print-silent">Manuel print uden popup vindue</label>
+        </div>
+    </div>
 </main>
 

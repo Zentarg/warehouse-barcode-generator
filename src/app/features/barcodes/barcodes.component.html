@@ -52,9 +52,14 @@
                         </span>
                         <input type="checkbox" id="automatic-print" [(ngModel)]="automaticPrint">
                     </label>
-                    <span *ngIf="isPrinting">Printer om {{automaticPrintCountdown}}s</span>
+                    <span *ngIf="isPrinting && automaticPrint">Printer om {{automaticPrintCountdown}}s</span>
                 </div>
-                <button (click)="print()">Print</button>
+                <button (click)="print()" [disabled]="isPrinting">
+                    <span [class.invisible]="isPrinting">
+                        Print
+                    </span>
+                    <app-spinner [show]="isPrinting"></app-spinner>
+                </button>
             </div>
         </div>
     </div>
