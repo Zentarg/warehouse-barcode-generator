@@ -44,6 +44,28 @@
                     <button (click)="addPackingSlip()">Opret Ny</button>
                 </div>
             </div>
+            <div class="loop-print">
+                <label for="loop-print" class="checkbox-label">
+                    <span>
+                        Loop Print
+                    </span>
+                    <input type="checkbox" id="loop-print" [(ngModel)]="loopPrint">
+                </label>
+                <div *ngIf="loopPrint" class="loop-print-controls input-group">
+                    <div class="loop-print-count">
+                        <label for="loop-print-count">Antal loops</label>
+                        <input type="number" min="1" max="999" id="loop-print-count" [(ngModel)]="loopPrintCount">
+                    </div>
+                    <div class="print-per-loop">
+                        <label for="print-per-loop">Kopier pr. loop</label>
+                        <select id="print-per-loop" [(ngModel)]="copiesPerLoop">
+                            <option *ngFor="let count of [1, 2]" [value]="count" >
+                                {{count}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="automatic-print">
                 <div class="automatic-print-control" *ngIf="canAutomaticPrint">
                     <label for="automatic-print" class="checkbox-label">
@@ -54,7 +76,7 @@
                     </label>
                     <span *ngIf="isPrinting && automaticPrint">Printer om {{automaticPrintCountdown}}s</span>
                 </div>
-                <button (click)="print()" [disabled]="isPrinting">
+                <button (click)="manualPrint()" [disabled]="isPrinting || isLoopPrinting">
                     <span [class.invisible]="isPrinting">
                         Print
                     </span>

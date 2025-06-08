@@ -9,6 +9,10 @@
     flex-direction: column;
     gap: 1rem;
 
+    @media print {
+        display: none; // Hide toasts during print
+    }
+
     .toast {
         display: flex;
         flex-direction: row;

@@ -19,6 +19,7 @@ import { PackingSlip } from '../../core/models/packing-slip';
 import { AddPackingSlipModal } from '../packing-slips/components/add-packing-slip-modal/add-packing-slip-modal.component';
 import { ModalSize } from '../../core/models/modal-settings';
 import { SpinnerComponent } from "../../shared/components/spinner/spinner.component";
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-barcodes',
@@ -41,6 +42,14 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   _automaticPrintCountdown: number = 0;
   automaticPrintCountdownInterval: any;
   _addToPackingSlipOnPrint: boolean = false;
+  _loopPrint: boolean = false;
+  _loopPrintCount: number = 1;
+  _copiesPerLoop: number = 2;
+  _isLoopPrinting: boolean = false;
+  
+  
+  _currentLoopPrints$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  _currentLoopPrints: Observable<number> = this._currentLoopPrints$.asObservable();
 
   constructor(private productsService: ProductsService, public barcodeHelperService: BarcodeHelperService, public settingsService: SettingsService, private cdr: ChangeDetectorRef, private toastService: ToastService, private printedProductsService: PrintedProductsService, private modalService: ModalService, private packingSlipsService: PackingSlipsService) {
   }
@@ -181,6 +190,13 @@ export class BarcodesComponent implements OnInit, OnDestroy {
         const cmToPixels = (cm: number) => Math.round(cm * dpi / 2.54);
         const cmToMicrons = (cm: number) => cm * 10000;
 
+        let copies = 2;
+        if (this.loopPrint) {
+          copies = this.copiesPerLoop;
+          if (copies < 1)
+            copies = 1;
+        }
+
         const printOptions: PrintOptions = {
           deviceName: this.settingsService.settings.labelPrinter?.name ?? '',
           pageWidth: cmToMicrons(10),
@@ -188,7 +204,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
           SSCC: this.selectedProduct!.SSCCWithoutChecksum,
           EAN: this.selectedProduct!.EAN,
           dpi: dpi,
-          copies: 2,
+          copies: copies,
           margins: {
             top: cmToPixels(0.5),
             right: cmToPixels(0.5),
@@ -198,7 +214,7 @@ export class BarcodesComponent implements OnInit, OnDestroy {
         }
 
         let action = "print";
-        if (this.settingsService.settings.manualPrintSilent)
+        if (this.settingsService.settings.manualPrintSilent || this.loopPrint)
           action = "print-silent";
 
         window.electron.ipcRenderer.invoke(action, printOptions);
@@ -208,6 +224,37 @@ export class BarcodesComponent implements OnInit, OnDestroy {
       }
       window.print();
     }
+  }
+
+  manualPrint(): void {
+    if (this.loopPrint) {
+      this.printLoop();
+    } else {
+      this.print();
+    }
+  }
+
+  printLoop(): void {
+    if (!this._loopPrint || this._loopPrintCount <= 0)
+      return;
+
+    this.isLoopPrinting = true;
+    
+    let loopSubscription = this._currentLoopPrints.subscribe((currentLoopPrints) => {
+      if (currentLoopPrints >= this._loopPrintCount) {
+        this.isPrinting = false;
+        loopSubscription.unsubscribe();
+        this._currentLoopPrints$.next(0);
+        this.isLoopPrinting = false;
+        this.kolliBarcode = "";
+        this.cdr.detectChanges();
+        return;
+      }
+
+      if (this.selectedProduct && this.copiesPerLoop > 0) {
+        this.print();
+      }
+    });
   }
 
   async afterPrint(): Promise<void> {
@@ -256,8 +303,11 @@ export class BarcodesComponent implements OnInit, OnDestroy {
 
     
     this.isPrinting = false;
-    this.kolliBarcode = "";
-    this.cdr.detectChanges();
+    if (!this.isLoopPrinting) {
+      this.kolliBarcode = "";
+      this.cdr.detectChanges();
+    }
+    this._currentLoopPrints$.next(this._currentLoopPrints$.value + 1);
   }
 
   async addPackingSlip() {
@@ -346,6 +396,8 @@ export class BarcodesComponent implements OnInit, OnDestroy {
     this._automaticPrint = value;
     if (!value)
       clearInterval(this.automaticPrintCountdownInterval);
+    else
+      this.loopPrint = false;
   }
 
   get isPrinting(): boolean {
@@ -354,6 +406,13 @@ export class BarcodesComponent implements OnInit, OnDestroy {
 
   set isPrinting(value: boolean) {
     this._isPrinting = value;
+  }
+  get isLoopPrinting(): boolean {
+    return this._isLoopPrinting;
+  }
+
+  set isLoopPrinting(value: boolean) {
+    this._isLoopPrinting = value;
   }
 
   get automaticPrintCountdown(): number {
@@ -377,7 +436,6 @@ export class BarcodesComponent implements OnInit, OnDestroy {
   };
 
   set selectedPackingSlip(packingSlip: PackingSlip | undefined) {
-    console.log(packingSlip);
     this._selectedPackingSlip = packingSlip;
   };
 
@@ -387,6 +445,33 @@ export class BarcodesComponent implements OnInit, OnDestroy {
 
   set addToPackingSlipOnPrint(packingSlip: boolean) {
     this._addToPackingSlipOnPrint = packingSlip;
+  };
+
+  get loopPrint(): boolean {
+    return this._loopPrint;
+  };
+
+  set loopPrint(loopPrint: boolean) {
+    this._loopPrint = loopPrint;
+    if (loopPrint) {
+      this.automaticPrint = false;
+    }
+  };
+
+  get loopPrintCount(): number {
+    return this._loopPrintCount;
+  };
+
+  set loopPrintCount(loopPrintCount: number) {
+    this._loopPrintCount = loopPrintCount;
+  };
+
+  get copiesPerLoop(): number {
+    return this._copiesPerLoop;
+  };
+
+  set copiesPerLoop(copiesPerLoop: number) {
+    this._copiesPerLoop = copiesPerLoop;
   };
 
 }
