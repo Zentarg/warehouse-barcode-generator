@@ -50,9 +50,14 @@ export class BarcodeHelperService {
   }
 
   public seperateKolliBarcode(kolliBarcode: string): { ean: string, batchNumber: string, expirationDate: string } {
-    const ean = kolliBarcode.slice(0, 13);
-    const batchNumber = kolliBarcode.slice(13, 19);
-    const expirationDate = kolliBarcode.slice(19, 27);
+    let eanLength = 13;
+    let batchNumberLength = 6;
+    let expirationDateLength = 8;
+    if (kolliBarcode.startsWith('1'))
+      eanLength = 14; // Adjust for ITF-14 if needed
+    const ean = kolliBarcode.slice(0, eanLength);
+    const batchNumber = kolliBarcode.slice(eanLength, eanLength + batchNumberLength);
+    const expirationDate = kolliBarcode.slice(eanLength + batchNumberLength, eanLength + batchNumberLength + expirationDateLength);
     return { ean, batchNumber, expirationDate };
   }
 

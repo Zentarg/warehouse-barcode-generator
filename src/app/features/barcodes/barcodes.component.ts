@@ -119,19 +119,20 @@ export class BarcodesComponent implements OnInit, OnDestroy {
         textsize: 8,
         height: 10,
       });
+
       let canvas2 = bwipjs.toCanvas('barcode2', {
         bcid: 'gs1-128', // Barcode type,
-        text: `(02)0${this.selectedProduct.EAN}(37)${this.kolli}`, // Text to encode
+        text: `(02)${!this.selectedProduct.EAN.startsWith('1') && this.selectedProduct.EAN.length == 13 ? '0' : ''}${this.selectedProduct.EAN}(37)${this.kolli}`, // Text to encode
         includetext: true, // Show human-readable text
         textyoffset: 5, // Y offset for human-readable text
         textsize: 8,
         height: 10,
       });
-      const data = this.selectedProduct.SSCCWithoutChecksum;
-      const checkDigit = this.barcodeHelperService.calculateGS1128CheckDigit(data);
+      const ssccWithoutChecksum = this.selectedProduct.SSCCWithoutChecksum;
+      const checkDigit = this.barcodeHelperService.calculateGS1128CheckDigit(ssccWithoutChecksum);
       let canvas3 = bwipjs.toCanvas('barcode3', {
         bcid: 'gs1-128', // Barcode type,
-        text: `(00)${data}${checkDigit}`,
+        text: `(00)${ssccWithoutChecksum}${checkDigit}`,
         includetext: true, // Show human-readable text
         textyoffset: 5, // Y offset for human-readable text
         textsize: 8,
